@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title></title>  
+</head>
+
+<body>
+	<div id="awesome">ClickMe</div>
+    <script type="text/javascript" src="jsobject.js"></script>
+    <script type="text/javascript">
+
+    // createElement() test
+    var el = jsObject.createElement({
+        tagName : "div",
+        className : "classOne classTwo",
+        html : "<b>Hello, World!</b>",
+        attributes : {
+            align : "center"
+        },
+        children : [{
+            tagName : "a",
+            html : "<u>Text</u>"
+        }]
+    });
+
+    document.body.appendChild(el);
+    var ele = jsObject('awesome');    
+	ele.click(function(e) {
+		console.log("awesome : "+e);
+	});
+
+    </script>
+</body>
+</html>
