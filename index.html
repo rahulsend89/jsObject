@@ -25,11 +25,14 @@
     });
 
     document.body.appendChild(el);
-    var ele = jsObject('awesome');    
-	ele.click(function(e) {
-		console.log("awesome : "+e);
-	});
-
+    var ele = jsObject('awesome');
+    ele.click(function(e){
+        console.log("awesomeClick");
+    }).mouseover(function(){
+        console.log("awesomeOver");
+    }).mouseout(function(){
+        console.log("awesomeOut");
+    });
     </script>
 </body>
 </html>

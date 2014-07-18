@@ -29,37 +29,16 @@ var arForFun = ['click','mouseover','mouseout'];
 var len = arForFun.length;
 for(var inc=0;inc<len;inc++){
 	var tempVal = arForFun[inc];
-	console.log(tempVal+"  : tempVal");
-	jsObject.prototype[tempVal] = function(fn) {
-	    var that = this;
-	    console.log(this.el+" : i :"+inc+" : "+tempVal);
-	    jsObject.addEvent(this.el, arForFun[inc], function(e) {
-	        fn.call(that, e);
-	    });	
-	    return this;
-	};	
+	jsObject.prototype[tempVal] = (function (arVar) {
+        return function(fn) {
+            var that = this;
+            jsObject.addEvent(this.el, arVar, function(e) {
+                fn.call(that, e);
+            });
+            return this;
+        };
+    })(arForFun[inc]);
 }
-
-//jsObject.prototype.mouseout = function(fn) {
-//    var that = this;
-//
-//    jsObject.addEvent(this.el, "mouseout", function(e) {
-//        fn.call(that, e);
-//    });
-//
-//    return this;
-//};
-//
-//jsObject.prototype.mouseover = function(fn) {
-//    var that = this;
-//
-//    jsObject.addEvent(this.el, "mouseover", function(e) {
-//        fn.call(that, e);
-//    });
-//
-//    return this;
-//};
-
 /*** Event static methods ***/
 if (typeof addEventListener !== "undefined") {
     jsObject.addEvent = function(obj, evt, fn) {
