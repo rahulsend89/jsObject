@@ -6,7 +6,7 @@
 </head>
 
 <body>
-	<div id="awesome">ClickMe</div>
+	<div id="awesome" style="position:absolute;">ClickMe</div>
     <script type="text/javascript" src="jsobject.js"></script>
     <script type="text/javascript">
 
@@ -26,7 +26,11 @@
 
     document.body.appendChild(el);
     var ele = jsObject('awesome');
-    ele.click(function(e){
+    ele.animate({
+        time:200,
+        left:200,
+        top:200,
+    }).click(function(e){
         console.log("awesomeClick");
     }).mouseover(function(){
         console.log("awesomeOver");

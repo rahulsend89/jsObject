@@ -24,12 +24,64 @@ jsObject.prototype.removeEvent = function(evt, fn) {
 
     return this;
 };
-
-var arForFun = ['click','mouseover','mouseout'];
+jsObject['startDeltaValue'] = 0;
+jsObject['endDeltaValue'] = 100;
+jsObject['animationTimer'] = [];
+jsObject.pause = function() {
+    clearInterval(this.animationtimer);
+    return this;
+};
+jsObject.prototype.pause = function() {
+    jsObject.pause();
+};
+jsObject.animate = function(el, obj) {
+    if (!obj) {
+        throw {
+            message: "Invalid argument"
+        };
+    } else {
+        var propNum = 0
+        for (styleValue in obj) {
+            propNum++;
+            var strVal = toCamelCase(styleValue);
+            var eleStyle = el.style;
+            if (!eleStyle.hasOwnProperty(strVal)) {
+                if (styleValue == 'time') {
+                    this.endDeltaValue = obj[styleValue];
+                }
+            } else {
+                console.log(styleValue + " : styleValue");
+                var startVal = el.style[styleValue];
+                startVal = (!startVal) ? 0 : parseInt(startVal);
+                this.makeThisPropertyAnimate(el, startVal,styleValue,obj[styleValue], propNum);
+            }
+        }
+    }
+}
+jsObject.makeThisPropertyAnimate = function(el, startVal,styleValue,endVal,propNum) {    
+    var that = this;
+    var styleChange = el.style;
+    var animationTimer = (function() {
+        return setInterval(function() {            
+            if (that.startDeltaValue <= that.endDeltaValue) {
+                that.startDeltaValue++;
+                var calVal = Math.linearTween(that.startDeltaValue, startVal, endVal - startVal, that.endDeltaValue)+"px";
+                styleChange[styleValue] = calVal;
+            } else {  
+                clearInterval(animationTimer);
+            }
+        }, 1)
+    })();
+};
+jsObject.prototype.animate = function(obj) {
+    jsObject.animate(this.el, obj);
+    return this;
+};
+var arForFun = ['click', 'mouseover', 'mouseout'];
 var len = arForFun.length;
-for(var inc=0;inc<len;inc++){
-	var tempVal = arForFun[inc];
-	jsObject.prototype[tempVal] = (function (arVar) {
+for (var inc = 0; inc < len; inc++) {
+    var tempVal = arForFun[inc];
+    jsObject.prototype[tempVal] = (function(arVar) {
         return function(fn) {
             var that = this;
             jsObject.addEvent(this.el, arVar, function(e) {
@@ -59,16 +111,16 @@ if (typeof addEventListener !== "undefined") {
             if (type === "mouseover" || type === "mouseout") {
                 relatedTarget = (type === "mouseover") ? event.fromElement : event.toElement;
             }
-            
+
             fn.call(obj, {
-                target : event.srcElement,
-                type : type,
-                relatedTarget : relatedTarget,
-                _event : event,
-                preventDefault : function() {
+                target: event.srcElement,
+                type: type,
+                relatedTarget: relatedTarget,
+                _event: event,
+                preventDefault: function() {
                     this._event.returnValue = false;
                 },
-                stopPropagation : function() {
+                stopPropagation: function() {
                     this._event.cancelBubble = true;
                 }
             });
@@ -113,38 +165,42 @@ jsObject.css = function(el, css, value) {
             // get style info for specified property
             return getStyle(el, css);
         } else {
-            throw { message: "Invalid parameter passed to css()" };
+            throw {
+                message: "Invalid parameter passed to css()"
+            };
         }
 
     } else if (cssType === "string" && valueType === "string") {
         elStyle[toCamelCase(css)] = value;
 
     } else {
-        throw { message: "Invalid parameters passed to css()" };
+        throw {
+            message: "Invalid parameters passed to css()"
+        };
     }
 };
 
-jsObject.hasClass = function(el, value) {   
-	return (" " + el.className + " ").indexOf(" " + value + " ") > -1;
+jsObject.hasClass = function(el, value) {
+    return (" " + el.className + " ").indexOf(" " + value + " ") > -1;
 };
 
 jsObject.addClass = function(el, value) {
     var className = el.className;
-    
+
     if (!className) {
-		el.className = value;
-	} else {
+        el.className = value;
+    } else {
         var classNames = value.split(/\s+/),
             l = classNames.length;
 
-        for ( var i = 0; i < l; i++ ) {		    
+        for (var i = 0; i < l; i++) {
             if (!this.hasClass(el, classNames[i])) {
                 className += " " + classNames[i];
             }
         }
 
         el.className = className.trim();
-	}
+    }
 };
 
 jsObject.removeClass = function(el, value) {
@@ -193,7 +249,7 @@ jsObject.prototype.removeClass = function(value) {
 
 jsObject.prototype.toggleClass = function(value) {
     jsObject.toggleClass(this.el, value);
-    
+
     return this;
 };
 
@@ -204,14 +260,16 @@ jsObject.prototype.hasClass = function(value) {
 /*** DOM Object Stuff ***/
 jsObject.createElement = function(obj) {
     if (!obj || !obj.tagName) {
-        throw { message : "Invalid argument" };
+        throw {
+            message: "Invalid argument"
+        };
     }
 
     var el = document.createElement(obj.tagName);
     obj.id && (el.id = obj.id);
     obj.className && (el.className = obj.className);
     obj.html && (el.innerHTML = obj.html);
-    
+
     if (typeof obj.attributes !== "undefined") {
         var attr = obj.attributes,
             prop;
@@ -242,7 +300,7 @@ jsObject.prototype.append = function(data) {
         this.el.appendChild(data.el);
     } else if (typeof data === "string") {
         var html = this.el.innerHTML;
-        
+
         this.el.innerHTML = html + data;
     }
 
@@ -252,38 +310,38 @@ jsObject.prototype.append = function(data) {
 jsObject.prototype.html = function(html) {
     if (typeof html !== "undefined") {
         this.el.innerHTML = html;
-        
+
         return this;
     } else {
         return this.el.innerHTML;
     }
 };
 
-jsObject.parseXML = function( data ) {
+jsObject.parseXML = function(data) {
     var xml, tmp;
-    if ( !data || typeof data !== "string" ) {
+    if (!data || typeof data !== "string") {
         return null;
     }
 
     // Support: IE9
     try {
         tmp = new DOMParser();
-        xml = tmp.parseFromString( data, "text/xml" );
-    } catch ( e ) {
+        xml = tmp.parseFromString(data, "text/xml");
+    } catch (e) {
         xml = undefined;
     }
 
-    if ( !xml || xml.getElementsByTagName( "parsererror" ).length ) {
-        jQuery.error( "Invalid XML: " + data );
+    if (!xml || xml.getElementsByTagName("parsererror").length) {
+        jQuery.error("Invalid XML: " + data);
     }
     return xml;
 };
 
 /*** Helper Functions ***/
 function toCamelCase(str) {
-    return str.replace(/-([a-z])/ig, function( all, letter ) {
-		return letter.toUpperCase();
-	});
+    return str.replace(/-([a-z])/ig, function(all, letter) {
+        return letter.toUpperCase();
+    });
 }
 
 var getStyle = (function() {
@@ -297,22 +355,27 @@ var getStyle = (function() {
         };
     }
 }());
-
-function animate(elem,style,unit,from,to,time,fun) {
-    if( !elem) return;
-    var start = new Date().getTime(),
-        timer = setInterval(function() {
-            var step = Math.min(1,(new Date().getTime()-start)/time);
-            elem.style[style] = (from+step*(to-from))+unit;
-            if( step == 1){ clearInterval(timer);};
-        },25);
-    elem.style[style] = from+unit;
+log = function(val){
+    console.log(val);
 }
+//Animation function 
+Math.linearTween = function(t, b, c, d) {
+    return c * t / d + b;
+};
 
+Math.easeInElastic = function(t, b, c, d, a, p) {
+    if (t == 0) return b;
+    if ((t /= d) == 1) return b + c;
+    if (!p) p = d * .3;
+    if (a < Math.abs(c)) {
+        a = c;
+        var s = p / 4;
+    } else var s = p / (2 * Math.PI) * Math.asin(c / a);
+    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
+};
 /*** Language Extensions ***/
 if (typeof String.prototype.trim === "undefined") {
     String.prototype.trim = function() {
-        return this.replace( /^\s+/, "" ).replace( /\s+$/, "" );
+        return this.replace(/^\s+/, "").replace(/\s+$/, "");
     };
 }
-
