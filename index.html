@@ -1,42 +1,66 @@
 <!doctype html>
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title></title>  
+    <meta charset="utf-8">
+    <title></title>
 </head>
 
 <body>
-	<div id="awesome" style="position:absolute;">ClickMe</div>
+    <div id="awesome" style="position:absolute;">ClickMe</div>
     <script type="text/javascript" src="jsobject.js"></script>
+    <script type="text/javascript" src="easeFunction.js"></script>
     <script type="text/javascript">
-
-    // createElement() test
+    var easeArray = ["easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInSine", "easeOutSine", "easeInOutSine", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBack", "easeOutBack", "easeInOutBack", "easeInBounce", "easeOutBounce", "easeInOutBounce"]
+        // createElement() test
+    var selectChild = "";
+    for (var i = easeArray.length - 1; i >= 0; i--) {
+        selectChild += "<option value=" + easeArray[i] + ">" + easeArray[i] + "</option>"
+    };
+    var form = jsObject.createElement({
+        tagName: "form"
+    });
+    var select = jsObject.createElement({
+        tagName: "select",
+        html: selectChild
+    });
+    form.appendChild(select);
     var el = jsObject.createElement({
-        tagName : "div",
-        className : "classOne classTwo",
-        html : "<b>Hello, World!</b>",
-        attributes : {
-            align : "center"
+        tagName: "div",
+        className: "classOne classTwo",
+        html: "<b>Hello, World!</b>",
+        attributes: {
+            align: "center"
         },
-        children : [{
-            tagName : "a",
-            html : "<u>Text</u>"
+        children: [{
+            tagName: "a",
+            html: "<u>Text</u>"
         }]
     });
-
-    document.body.appendChild(el);
     var ele = jsObject('awesome');
-    ele.animate({
-        time:200,
-        left:200,
-        top:200,
-    }).click(function(e){
+    jsObject.addEvent(select, "change", function(e) {
+        var changeVal = this.value;
+        ele.el.style.top = 0;
+        ele.el.style.left = 0;
+        setTimeout(function() {
+            ele.animate({
+                ease: changeVal,
+                time: 2000,
+                left: 200,
+                top: 200,
+            });
+        }, 10);
+    });
+    ele.click(function(e) {
         console.log("awesomeClick");
-    }).mouseover(function(){
+    }).mouseover(function() {
         console.log("awesomeOver");
-    }).mouseout(function(){
+    }).mouseout(function() {
         console.log("awesomeOut");
     });
+    document.body.appendChild(el);
+    document.body.appendChild(form);
     </script>
 </body>
+
 </html>

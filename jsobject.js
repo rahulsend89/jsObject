@@ -45,29 +45,32 @@ jsObject.animate = function(el, obj) {
             propNum++;
             var strVal = toCamelCase(styleValue);
             var eleStyle = el.style;
+            var easeVal = (!obj['ease'])?"linearTween":obj['ease'];
             if (!eleStyle.hasOwnProperty(strVal)) {
                 if (styleValue == 'time') {
                     this.endDeltaValue = obj[styleValue];
                 }
-            } else {
-                console.log(styleValue + " : styleValue");
-                var startVal = el.style[styleValue];
-                startVal = (!startVal) ? 0 : parseInt(startVal);
-                this.makeThisPropertyAnimate(el, startVal,styleValue,obj[styleValue], propNum);
+                if (styleValue == 'ease') {
+                    easeVal = obj['ease'];
+                }
             }
+            var startVal = el.style[styleValue];
+            startVal = (!startVal) ? 0 : parseInt(startVal);
+            this.startDeltaValue = 0;
+            this.makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
         }
     }
 }
-jsObject.makeThisPropertyAnimate = function(el, startVal,styleValue,endVal,propNum) {    
+jsObject.makeThisPropertyAnimate = function(el, startVal, styleValue, endVal, propNum, ease) {
     var that = this;
     var styleChange = el.style;
     var animationTimer = (function() {
-        return setInterval(function() {            
+        return setInterval(function() {
             if (that.startDeltaValue <= that.endDeltaValue) {
                 that.startDeltaValue++;
-                var calVal = Math.linearTween(that.startDeltaValue, startVal, endVal - startVal, that.endDeltaValue)+"px";
+                var calVal = that[ease](that.startDeltaValue, startVal, endVal - startVal, that.endDeltaValue) + "px";
                 styleChange[styleValue] = calVal;
-            } else {  
+            } else {
                 clearInterval(animationTimer);
             }
         }, 1)
@@ -355,23 +358,11 @@ var getStyle = (function() {
         };
     }
 }());
-log = function(val){
+log = function(val) {
     console.log(val);
 }
-//Animation function 
-Math.linearTween = function(t, b, c, d) {
+jsObject.linearTween = function(t, b, c, d) {
     return c * t / d + b;
-};
-
-Math.easeInElastic = function(t, b, c, d, a, p) {
-    if (t == 0) return b;
-    if ((t /= d) == 1) return b + c;
-    if (!p) p = d * .3;
-    if (a < Math.abs(c)) {
-        a = c;
-        var s = p / 4;
-    } else var s = p / (2 * Math.PI) * Math.asin(c / a);
-    return -(a * Math.pow(2, 10 * (t -= 1)) * Math.sin((t * d - s) * (2 * Math.PI) / p)) + b;
 };
 /*** Language Extensions ***/
 if (typeof String.prototype.trim === "undefined") {
