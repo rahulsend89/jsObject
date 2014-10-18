@@ -15,4 +15,4 @@ To start using jsObject, you will need only the following hardly 1.5kb of minifi
 
 
 ###License
-Releasing unsder the MIT License.
+Releasing under the <b>MIT License</b>.
