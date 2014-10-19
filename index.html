@@ -41,11 +41,11 @@
     jsObject.addEvent(select, "change", function(e) {
         var changeVal = this.value;
         ele.el.style.top = 0;
-        ele.el.style.left = 0;
+        ele.el.style.left = 0;        
         setTimeout(function() {
             ele.animate({
                 ease: changeVal,
-                time: 200,
+                time: 2000,
                 left: 200,
                 top: 200,
             });
@@ -61,6 +61,7 @@
     document.body.appendChild(el);
     document.body.appendChild(form);
     </script>
+    <input type="button" value="PauseAnimation" onclick="jsObject.pause()">
 </body>
 
 </html>
