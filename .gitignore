@@ -19,6 +19,7 @@ VersionX-revision.h
 build/
 graphics/
 Graphics/
+config.codekit
 # Other source repository archive directories (protects when importing)
 .hg
 .svn
