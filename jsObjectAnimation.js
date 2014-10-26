@@ -7,8 +7,6 @@ function jsObject(obj) {
         this.el = document.getElementById(obj);
     } else if (type === "object" && obj.nodeType !== "undefined" && obj.nodeType === 1) {
         this.el = obj;
-    } else {
-        throw new Error("Argument is of wrong type");
     }
 }
 jsObject['startDeltaValue'] = 0;
