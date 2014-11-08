@@ -9,6 +9,11 @@ function jsObject(obj) {
         this.el = obj;
     }
 }
+extend=function(d,s) {
+    for (var p in s)
+        d[p] = s[p];
+    return d;
+};
 jsObject['startDeltaValue'] = 0;
 jsObject['endDeltaValue'] = 100;
 jsObject['animationTimer'] = [];
