@@ -15,10 +15,10 @@ jsObject.extend = function(s) {
     return this;
 };
 jsObject.extend({
-	startDeltaValue:0,
-	endDeltaValue:100,
-	animationTimer:[],
-	isPlaying:false,
+    startDeltaValue: 0,
+    endDeltaValue: 100,
+    animationTimer: [],
+    isPlaying: false,
     pause: function() {
         if (this.isPlaying) {
             this.isPlaying = false;
@@ -61,9 +61,12 @@ jsObject.extend({
                 }
                 this.animationtimer[propNum] = 0;
                 var startVal = el.style[styleValue];
-                startVal = (!startVal) ? 0 : parseInt(startVal);
+                startVal = (!startVal) ? 10 : parseInt(startVal);
                 this.startDeltaValue = 0;
-                this.makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                var type = typeof obj[styleValue];
+                if (type !== "string" && styleValue !== "time") {
+                    this.makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                }
             }
         }
     },
@@ -77,16 +80,17 @@ jsObject.extend({
                     that.startDeltaValue++;
                     var calVal = that[ease](that.startDeltaValue, startVal, endVal - startVal, that.endDeltaValue) + "px";
                     styleChange[styleValue] = calVal;
-                } else {
-                    clearInterval(animationTimer);
-                    this.isPlaying = false;
+                } else {                    
+                    clearInterval(that.animationtimer[propNum]);
+                    that.isPlaying = false;
+                    styleChange[styleValue] = endVal +"px";
                 }
             }
             that.animationtimer[propNum] = setInterval(that.callFunction[propNum], 1)
             return that.animationtimer[propNum];
         })();
     },
-    linearTween : function(t, b, c, d) {
+    linearTween: function(t, b, c, d) {
         return c * t / d + b;
     }
 })();

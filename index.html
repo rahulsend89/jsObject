@@ -5,16 +5,19 @@
     <meta charset="utf-8">
     <title></title>
     <style type="text/css">
-    .testColor{
-        color:red;
+    .testColor {
+        color: white;
+        display: inline;
+        background-color: gray;
+        border: 1px solid black;
     }
     </style>
 </head>
 
 <body>
-    <div id="awesome" class="awesome" style="position:relative;">ClickMe</div>
+    <div id="awesome" class="testColor" style="position: absolute;">ClickMe</div>
     <script type="text/javascript" src="jsObjectAnimation-min.js"></script>
-    <script type="text/javascript" src="easeFunction-min.js"></script>    
+    <script type="text/javascript" src="easeFunction-min.js"></script>
     <script type="text/javascript" src="jsobject-min.js"></script>
     <script type="text/javascript">
     var easeArray = ["easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInSine", "easeOutSine", "easeInOutSine", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBack", "easeOutBack", "easeInOutBack", "easeInBounce", "easeOutBounce", "easeInOutBounce"]
@@ -43,22 +46,26 @@
             html: "<u>Text</u>"
         }]
     });
-    var ele = jsObject('awesome');    
+    var ele = jsObject('awesome');
     jsObject.addEvent(select, "change", function(e) {
         var changeVal = this.value;
-        ele.el.style.top = 0;
-        ele.el.style.left = 0;        
+        ele.el.style.top = "10px";
+        ele.el.style.left = "10px";
+        ele.el.style.width = "58px";
+        ele.el.style.height = "20px";
         setTimeout(function() {
             ele.animate({
                 ease: changeVal,
                 time: 2000,
                 left: 200,
                 top: 200,
+                width: (Math.random() * 200 + 100),
+                height: (Math.random() * 200 + 100),
             });
         }, 10);
     });
-    ele.click(function(){
-        ele.toggleClass("testColor");
+    ele.click(function() {
+        this.toggleClass("testColor");
     }).mouseover(function() {
         console.log("awesomeOver");
     }).mouseout(function() {
