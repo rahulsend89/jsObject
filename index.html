@@ -4,10 +4,15 @@
 <head>
     <meta charset="utf-8">
     <title></title>
+    <style type="text/css">
+    .testColor{
+        color:red;
+    }
+    </style>
 </head>
 
 <body>
-    <div id="awesome" style="position:relative;">ClickMe</div>
+    <div id="awesome" class="awesome" style="position:relative;">ClickMe</div>
     <script type="text/javascript" src="jsObjectAnimation-min.js"></script>
     <script type="text/javascript" src="easeFunction-min.js"></script>    
     <script type="text/javascript" src="jsobject-min.js"></script>
@@ -38,7 +43,7 @@
             html: "<u>Text</u>"
         }]
     });
-    var ele = jsObject('awesome');
+    var ele = jsObject('awesome');    
     jsObject.addEvent(select, "change", function(e) {
         var changeVal = this.value;
         ele.el.style.top = 0;
@@ -52,8 +57,8 @@
             });
         }, 10);
     });
-    ele.click(function(e) {
-        console.log("awesomeClick");
+    ele.click(function(){
+        ele.toggleClass("testColor");
     }).mouseover(function() {
         console.log("awesomeOver");
     }).mouseout(function() {
