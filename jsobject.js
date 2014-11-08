@@ -32,6 +32,7 @@ for (var inc = 0; inc < arForFunClass.length; inc++) {
         } else {
             return function(classVal) {
                 jsObject[arVar](this.el, classVal);
+                return this;
             }
         }
     })(tempVal);
@@ -226,7 +227,7 @@ jsObject.parseXML = function(data) {
     }
 
     if (!xml || xml.getElementsByTagName("parsererror").length) {
-        jQuery.error("Invalid XML: " + data);
+        //error
     }
     return xml;
 };
