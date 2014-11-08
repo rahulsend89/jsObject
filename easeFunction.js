@@ -1,5 +1,5 @@
 //Animation function 
-extend(jsObject, {
+jsObject.extend({
     easeInQuad: function(t, b, c, d) {
         return c * (t /= d) * t + b;
     },
