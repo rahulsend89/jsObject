@@ -34,7 +34,6 @@ var animationObj = (function(mainObj) {
                 animationtimer[i] = setInterval(callFunction[i], 1);
             };
         }
-        return this;
     }
 
     function animate(el, obj) {
@@ -93,7 +92,6 @@ var animationObj = (function(mainObj) {
     return {
         pause: pause,
         animate: animate,
-        makeThisPropertyAnimate: makeThisPropertyAnimate,
         linearTween: linearTween,
     }
 })(jsObject);
