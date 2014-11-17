@@ -20,6 +20,7 @@ var animationObj = (function(mainObj) {
     var animationtimer = [];
     var callFunction = [];
     var isPlaying = false;
+
     function pause() {
         if (isPlaying) {
             isPlaying = false;
@@ -55,7 +56,7 @@ var animationObj = (function(mainObj) {
                     if (styleValue == 'ease') {
                         easeVal = obj['ease'];
                     }
-                }                
+                }
                 animationtimer[propNum] = 0;
                 var startVal = el.style[styleValue];
                 startVal = (!startVal) ? 10 : parseInt(startVal);
@@ -67,6 +68,7 @@ var animationObj = (function(mainObj) {
             }
         }
     }
+
     function makeThisPropertyAnimate(el, startVal, styleValue, endVal, propNum, ease) {
         isPlaying = true;
         var styleChange = el.style;
@@ -83,9 +85,9 @@ var animationObj = (function(mainObj) {
                 }
             }
             animationtimer[propNum] = setInterval(callFunction[propNum], 1)
-            return animationtimer[propNum];
         })();
     }
+
     function linearTween(t, b, c, d) {
         return c * t / d + b;
     }
@@ -95,7 +97,7 @@ var animationObj = (function(mainObj) {
         linearTween: linearTween,
     }
 })(jsObject);
-jsObject.extend(animationObj)();
+jsObject.extend(animationObj);
 jsObject.prototype = {
     animate: function(obj) {
         jsObject.animate(this.el, obj);
