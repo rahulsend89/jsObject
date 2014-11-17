@@ -14,28 +14,30 @@ jsObject.extend = function(s) {
         this[p] = s[p];
     return this;
 };
-jsObject.extend({
-    startDeltaValue: 0,
-    endDeltaValue: 100,
-    animationTimer: [],
-    isPlaying: false,
-    pause: function() {
-        if (this.isPlaying) {
-            this.isPlaying = false;
-            var len = this.animationtimer.length;
-            for (var i = 0; i < this.animationtimer.length; i++) {
-                clearInterval(this.animationtimer[i]);
+var animationObj = (function(mainObj) {
+    var startDeltaValue = 0;
+    var endDeltaValue = 100;
+    var animationtimer = [];
+    var callFunction = [];
+    var isPlaying = false;
+    function pause() {
+        if (isPlaying) {
+            isPlaying = false;
+            var len = animationtimer.length;
+            for (var i = 0; i < animationtimer.length; i++) {
+                clearInterval(animationtimer[i]);
             };
         } else {
-            this.isPlaying = true;
-            var len = this.animationtimer.length;
-            for (var i = 0; i < this.animationtimer.length; i++) {
-                this.animationtimer[i] = setInterval(this.callFunction[i], 1);
+            isPlaying = true;
+            var len = animationtimer.length;
+            for (var i = 0; i < animationtimer.length; i++) {
+                animationtimer[i] = setInterval(callFunction[i], 1);
             };
         }
         return this;
-    },
-    animate: function(el, obj) {
+    }
+
+    function animate(el, obj) {
         if (!obj) {
             throw {
                 message: "Invalid argument"
@@ -49,56 +51,60 @@ jsObject.extend({
                 var easeVal = (!obj['ease']) ? "linearTween" : obj['ease'];
                 if (!eleStyle.hasOwnProperty(strVal)) {
                     if (styleValue == 'time') {
-                        this.endDeltaValue = obj[styleValue];
+                        endDeltaValue = obj[styleValue];
                     }
                     if (styleValue == 'ease') {
                         easeVal = obj['ease'];
                     }
-                }
-                if (!this.animationtimer) {
-                    this.animationtimer = [];
-                    this.callFunction = [];
-                }
-                this.animationtimer[propNum] = 0;
+                }                
+                animationtimer[propNum] = 0;
                 var startVal = el.style[styleValue];
                 startVal = (!startVal) ? 10 : parseInt(startVal);
-                this.startDeltaValue = 0;
+                startDeltaValue = 0;
                 var type = typeof obj[styleValue];
                 if (type !== "string" && styleValue !== "time") {
-                    this.makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                    makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
                 }
             }
         }
-    },
-    makeThisPropertyAnimate: function(el, startVal, styleValue, endVal, propNum, ease) {
-        var that = this;
-        this.isPlaying = true;
+    }
+    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, propNum, ease) {
+        isPlaying = true;
         var styleChange = el.style;
-        var animationTimer = (function() {
-            that.callFunction[propNum] = function() {
-                if (that.startDeltaValue <= that.endDeltaValue) {
-                    that.startDeltaValue++;
-                    var calVal = that[ease](that.startDeltaValue, startVal, endVal - startVal, that.endDeltaValue) + "px";
+        (function() {
+            callFunction[propNum] = function() {
+                if (startDeltaValue <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
+                    startDeltaValue++;
+                    var calVal = mainObj[ease](startDeltaValue, startVal, endVal - startVal, endDeltaValue) + "px";
                     styleChange[styleValue] = calVal;
-                } else {                    
-                    clearInterval(that.animationtimer[propNum]);
-                    that.isPlaying = false;
-                    styleChange[styleValue] = endVal +"px";
+                } else {
+                    clearInterval(animationtimer[propNum]);
+                    isPlaying = false;
+                    styleChange[styleValue] = endVal + "px";
                 }
             }
-            that.animationtimer[propNum] = setInterval(that.callFunction[propNum], 1)
-            return that.animationtimer[propNum];
+            animationtimer[propNum] = setInterval(callFunction[propNum], 1)
+            return animationtimer[propNum];
         })();
-    },
-    linearTween: function(t, b, c, d) {
+    }
+    function linearTween(t, b, c, d) {
         return c * t / d + b;
     }
-})();
-jsObject.prototype.animate = function(obj) {
-    jsObject.animate(this.el, obj);
-    return this;
-};
-jsObject.prototype.pause = function() {
-    jsObject.pause();
-    return this;
+    return {
+        pause: pause,
+        animate: animate,
+        makeThisPropertyAnimate: makeThisPropertyAnimate,
+        linearTween: linearTween,
+    }
+})(jsObject);
+jsObject.extend(animationObj)();
+jsObject.prototype = {
+    animate: function(obj) {
+        jsObject.animate(this.el, obj);
+        return this;
+    },
+    pause: function() {
+        jsObject.pause();
+        return this;
+    }
 };
