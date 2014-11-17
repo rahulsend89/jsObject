@@ -10,7 +10,7 @@ A powerful little Javascript object based library to handle simple as well as sm
 * Change object's style
 
 ##Dependencies
-To start using jsObjectAnimation-min, you will need only the following 1.752kb of minified file:
+To start using jsObjectAnimation-min, you will need only the following 1.378kb of minified file:
 * [jsObjectAnimation-min.js](https://github.com/rahulsend89/jsObject/blob/master/jsObjectAnimation-min.js)
 
 
