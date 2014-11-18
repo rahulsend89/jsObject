@@ -30,7 +30,7 @@ var animationObj = (function(mainObj) {
         } else {
             isPlaying = true;
             for (i in animationtimer) {
-                animationtimer[i] = setInterval(callFunction[i], 1);
+                animationtimer[i] = cfn(callFunction[i], 1);
             };
         }
     }
@@ -39,7 +39,7 @@ var animationObj = (function(mainObj) {
         if (isPlaying) {
             pause();
             startDeltaValue = 100;
-            callFunction={};
+            callFunction = {};
             animationtimer = {};
         }
         if (!obj) {
@@ -62,7 +62,7 @@ var animationObj = (function(mainObj) {
                 } else {
                     animationtimer[propNum] = 0;
                     var startVal = getStyle(el, styleValue);
-                    startVal = (isNaN(parseInt(startVal)))?10:parseInt(startVal);
+                    startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
                     startDeltaValue = 0;
                     var type = typeof obj[styleValue];
                     if (type !== "string" && styleValue !== "time") {
@@ -77,18 +77,18 @@ var animationObj = (function(mainObj) {
         isPlaying = true;
         var styleChange = el.style;
         (function() {
-            callFunction[propNum] = function() {
+            var callBackFun = callFunction[propNum] = function() {
                 if (startDeltaValue <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
                     startDeltaValue++;
                     var calVal = mainObj[ease](startDeltaValue, startVal, endVal - startVal, endDeltaValue) + "px";
                     styleChange[styleValue] = calVal;
                 } else {
-                    clearInterval(animationtimer[propNum]);
+                    clearInterval(callBackFun["clearId"]);
                     isPlaying = false;
                     styleChange[styleValue] = endVal + "px";
                 }
             }
-            animationtimer[propNum] = setInterval(callFunction[propNum], 1000/60)
+            animationtimer[propNum] = cfn(callBackFun, 1)
         })();
     }
 
@@ -112,11 +112,13 @@ jsObject.prototype = {
         return this;
     }
 };
+
 function toCamelCase(str) {
     return str.replace(/-([a-z])/ig, function(all, letter) {
         return letter.toUpperCase();
     });
 }
+
 var getStyle = (function() {
     if (typeof getComputedStyle !== "undefined") {
         return function(el, cssProp) {
@@ -128,3 +130,14 @@ var getStyle = (function() {
         };
     }
 }());
+var cfn = (function() {
+    var _setInterval = window.setInterval;
+    var callFunctionWithInterval = function(fn, delay) {
+        var id = _setInterval(function() {
+            fn();
+        }, delay);
+        fn["clearId"] = id;
+        return id;
+    }
+    return callFunctionWithInterval;
+})();
