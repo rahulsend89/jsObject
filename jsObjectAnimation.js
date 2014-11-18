@@ -17,20 +17,19 @@ jsObject.extend = function(s) {
 var animationObj = (function(mainObj) {
     var startDeltaValue = 0;
     var endDeltaValue = 100;
-    var animationtimer = {};
     var callFunction = {};
     var isPlaying = false;
 
     function pause() {
         if (isPlaying) {
             isPlaying = false;
-            for (i in animationtimer) {
-                clearInterval(animationtimer[i]);
+            for (i in callFunction) {
+                clearInterval(callFunction[i]["cid"]);
             };
         } else {
             isPlaying = true;
-            for (i in animationtimer) {
-                animationtimer[i] = cfn(callFunction[i], 1);
+            for (i in callFunction) {
+                cfn(callFunction[i], 1);
             };
         }
     }
@@ -40,7 +39,6 @@ var animationObj = (function(mainObj) {
             pause();
             startDeltaValue = 100;
             callFunction = {};
-            animationtimer = {};
         }
         if (!obj) {
             throw {
@@ -48,19 +46,13 @@ var animationObj = (function(mainObj) {
             };
         } else {
             var propNum = 0
-            for (styleValue in obj) {
+            for (var styleValue in obj) {
                 propNum++;
                 var eleStyle = el.style;
-                var easeVal = (!obj['ease']) ? "linearTween" : obj['ease'];
-                if (!eleStyle.hasOwnProperty(toCamelCase(styleValue))) {
-                    if (styleValue == 'time') {
-                        endDeltaValue = obj[styleValue];
-                    }
-                    if (styleValue == 'ease') {
-                        easeVal = obj['ease'];
-                    }
-                } else {
-                    animationtimer[propNum] = 0;
+                var easeVal = (!obj.hasOwnProperty('ease')) ? "linearTween" : obj['ease'];
+                if (styleValue == 'time') {
+                    endDeltaValue = obj[styleValue];
+                } else if(styleValue !== 'ease'){
                     var startVal = getStyle(el, styleValue);
                     startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
                     startDeltaValue = 0;
@@ -83,12 +75,12 @@ var animationObj = (function(mainObj) {
                     var calVal = mainObj[ease](startDeltaValue, startVal, endVal - startVal, endDeltaValue) + "px";
                     styleChange[styleValue] = calVal;
                 } else {
-                    clearInterval(callBackFun["clearId"]);
+                    clearInterval(callBackFun["cid"]);
                     isPlaying = false;
                     styleChange[styleValue] = endVal + "px";
                 }
             }
-            animationtimer[propNum] = cfn(callBackFun, 1)
+            cfn(callBackFun, 1)
         })();
     }
 
@@ -136,7 +128,7 @@ var cfn = (function() {
         var id = _setInterval(function() {
             fn();
         }, delay);
-        fn["clearId"] = id;
+        fn["cid"] = id;
         return id;
     }
     return callFunctionWithInterval;
