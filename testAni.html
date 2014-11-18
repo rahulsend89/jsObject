@@ -1,0 +1,46 @@
+<html>
+
+<head>
+    <title>testAni</title>
+    <script type="text/javascript" src="jsObjectAnimation.js"></script>
+    <style type="text/css">
+    .box {
+        display: inline-block;
+        height: 100px;
+        width: 100px;
+        background-color: #c6c6c6;
+    }
+    input{
+    	padding: 30px;
+    	border: 1px black solid;
+    	width:200px;
+    }
+    </style>
+</head>
+
+<body>
+    <span class="box" id="r" style="position:relative;"></span>
+    <script type="text/javascript">
+    var ele = jsObject("r");
+    var initX = 10;
+    var moveVal = 100;
+    function moveRight() {
+        initX += moveVal;
+        animateMyBlock();
+    }
+    function animateMyBlock() {
+        ele.animate({
+        	time: 100,
+            left: initX,
+            width:((Math.random()*200)+100)        
+        });
+    }
+    function moveLeft() {
+        initX -= moveVal;
+        animateMyBlock();
+    }
+    </script>
+    <br/>
+    <input type="button" onclick="moveRight()" value="right" />
+    <input type="button" onclick="moveLeft()" value="left" />
+</body>

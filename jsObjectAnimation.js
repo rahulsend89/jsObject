@@ -17,27 +17,31 @@ jsObject.extend = function(s) {
 var animationObj = (function(mainObj) {
     var startDeltaValue = 0;
     var endDeltaValue = 100;
-    var animationtimer = [];
-    var callFunction = [];
+    var animationtimer = {};
+    var callFunction = {};
     var isPlaying = false;
 
     function pause() {
         if (isPlaying) {
             isPlaying = false;
-            var len = animationtimer.length;
-            for (var i = 0; i < animationtimer.length; i++) {
+            for (i in animationtimer) {
                 clearInterval(animationtimer[i]);
             };
         } else {
             isPlaying = true;
-            var len = animationtimer.length;
-            for (var i = 0; i < animationtimer.length; i++) {
+            for (i in animationtimer) {
                 animationtimer[i] = setInterval(callFunction[i], 1);
             };
         }
     }
 
     function animate(el, obj) {
+        if (isPlaying) {
+            pause();
+            startDeltaValue = 100;
+            callFunction={};
+            animationtimer = {};
+        }
         if (!obj) {
             throw {
                 message: "Invalid argument"
@@ -46,24 +50,24 @@ var animationObj = (function(mainObj) {
             var propNum = 0
             for (styleValue in obj) {
                 propNum++;
-                var strVal = toCamelCase(styleValue);
                 var eleStyle = el.style;
                 var easeVal = (!obj['ease']) ? "linearTween" : obj['ease'];
-                if (!eleStyle.hasOwnProperty(strVal)) {
+                if (!eleStyle.hasOwnProperty(toCamelCase(styleValue))) {
                     if (styleValue == 'time') {
                         endDeltaValue = obj[styleValue];
                     }
                     if (styleValue == 'ease') {
                         easeVal = obj['ease'];
                     }
-                }
-                animationtimer[propNum] = 0;
-                var startVal = el.style[styleValue];
-                startVal = (!startVal) ? 10 : parseInt(startVal);
-                startDeltaValue = 0;
-                var type = typeof obj[styleValue];
-                if (type !== "string" && styleValue !== "time") {
-                    makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                } else {
+                    animationtimer[propNum] = 0;
+                    var startVal = getStyle(el, styleValue);
+                    startVal = (isNaN(parseInt(startVal)))?10:parseInt(startVal);
+                    startDeltaValue = 0;
+                    var type = typeof obj[styleValue];
+                    if (type !== "string" && styleValue !== "time") {
+                        makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                    }
                 }
             }
         }
@@ -84,7 +88,7 @@ var animationObj = (function(mainObj) {
                     styleChange[styleValue] = endVal + "px";
                 }
             }
-            animationtimer[propNum] = setInterval(callFunction[propNum], 1)
+            animationtimer[propNum] = setInterval(callFunction[propNum], 1000/60)
         })();
     }
 
@@ -108,3 +112,19 @@ jsObject.prototype = {
         return this;
     }
 };
+function toCamelCase(str) {
+    return str.replace(/-([a-z])/ig, function(all, letter) {
+        return letter.toUpperCase();
+    });
+}
+var getStyle = (function() {
+    if (typeof getComputedStyle !== "undefined") {
+        return function(el, cssProp) {
+            return window.getComputedStyle(el, null).getPropertyValue(cssProp);
+        };
+    } else {
+        return function(el, cssProp) {
+            return el.currentStyle[toCamelCase(cssProp)];
+        };
+    }
+}());
