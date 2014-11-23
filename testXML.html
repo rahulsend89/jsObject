@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script>
+    var Obj = {};
+    var parseXml = function(xml) {
+        var dom = null;
+        if (window.DOMParser) {
+            dom = (new DOMParser()).parseFromString(xml, "text/xml");
+        } else if (window.ActiveXObject) {
+            dom = new ActiveXObject('Microsoft.XMLDOM');
+            dom.async = false;
+            if (!dom.loadXML(xml)) {
+                throw dom.parseError.reason + " " + dom.parseError.srcText;
+            }
+        } else {
+            throw "cannot parse xml string!";
+        }
+
+        function parseNode(xmlNode, result) {
+            if (xmlNode.nodeName == "#text" && xmlNode.nodeValue.trim() == "") {
+                return;
+            } else {
+                var resuleNode = {};
+                var existing = result[xmlNode.nodeName];
+                if (existing) {
+                    if (!existing.length) {
+                        result[xmlNode.nodeName] = [existing, resuleNode];
+                    } else {
+                        result[xmlNode.nodeName].push(resuleNode);
+                    }
+                } else if (xmlNode.nodeName != "#text") {
+                    result[xmlNode.nodeName] = resuleNode;
+                }
+                if (xmlNode.nodeValue !== null) {
+                    result["value"] = xmlNode.nodeValue;
+                }
+                if (xmlNode.attributes) {
+                    var length = xmlNode.attributes.length;
+                    for (var i = 0; i < length; i++) {
+                        var attribute = xmlNode.attributes[i];
+                        resuleNode[attribute.nodeName] = attribute.nodeValue;
+                    }
+                }
+                var length = xmlNode.childNodes.length;
+                for (var i = 0; i < length; i++) {
+                    parseNode(xmlNode.childNodes[i], resuleNode);
+                }
+            }
+        }
+        var result = {};
+        if (dom.childNodes.length) {
+            parseNode(dom.childNodes[0], result);
+        }
+        return result;
+    }
+
+    function loadData(url) {
+        var xmlhttp;
+        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp = new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 /*&& xmlhttp.status == 200*/ ) {
+                Obj = parseXml(xmlhttp.response);
+                document.getElementById("myDiv").innerHTML = xmlhttp.response;
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.send();
+    }
+    </script>
+</head>
+
+<body>
+
+    <div id="myDiv">
+        <h2>load</h2>
+    </div>
+    <button type="button" onclick="loadData('https://itunesu.itunes.apple.com/feed/id385633199');//">Change Content</button>
+
+</body>
+
+</html>
