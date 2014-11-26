@@ -2,13 +2,16 @@
 
 <head>
     <title>testAni</title>
-    <script type="text/javascript" src="jsObjectAnimation.js"></script>
+    <script type="text/javascript" src="jsObjectAnimation-min.js"></script>
+    <script type="text/javascript" src="easeFunction-min.js"></script>
     <style type="text/css">
     .box {
         display: inline-block;
         height: 100px;
         width: 100px;
         background-color: #c6c6c6;
+        position: relative;
+        border: 1px black solid;
     }
     input {
         padding: 30px;
@@ -20,24 +23,25 @@
 
 <body>
     <div id="main">
-        <span class="box" id="x0" style="position:relative;"></span>
-        <span class="box" id="x1" style="position:relative;"></span>
-        <span class="box" id="x2" style="position:relative;"></span>
-        <span class="box" id="x3" style="position:relative;"></span>
+        <span class="box"></span>
+        <span class="box"></span>
+        <span class="box"></span>
+        <span class="box"></span>
     </div>
     <script type="text/javascript">
     var ele = jsObject("main");
     var allObjects = ele.el.children;
     var initX = 10;
     var moveVal = 100;
-
     function animateMyBlock() {
         for (var i = allObjects.length - 1; i >= 0; i--) {            
-            var animateObject = jsObject("x"+i);
+            var animateObject = jsObject(allObjects[i]);
             animateObject.animate({
-                delay:i*500,
-                time: 100,
-                top: initX,
+                delay:i*1000,
+                time: 200,
+                //ease:"easeInElastic",
+                left: initX,
+                width:Math.random()*100+20
             });
         };
     }

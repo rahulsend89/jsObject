@@ -12,42 +12,49 @@ function jsObject(obj) {
 jsObject.extend = function(s) {
     for (var p in s)
         this[p] = s[p];
+    return this;
 };
 var animationObj = (function(mainObj) {
-    var startDeltaValue = 0;
     var endDeltaValue = 100;
     var callFunction = {};
+    var delayTimer = {};
     var isPlaying = false;
     var animationDelay = 0;
+    var propNum = 0
 
     function pause() {
         if (isPlaying) {
             isPlaying = false;
             for (i in callFunction) {
                 clearInterval(callFunction[i]["cid"]);
-            };
+            }
+            for (i in delayTimer) {
+                clearTimeout(delayTimer[i]["cid"]);
+            }
         } else {
             isPlaying = true;
             for (i in callFunction) {
                 cfn(callFunction[i], 1);
-            };
+            }
+            for (i in delayTimer) {
+                cfn(delayTimer[i]["cid"], true);
+            }
         }
     }
 
     function animate(el, obj) {
         if (isPlaying) {
             pause();
-            startDeltaValue = 100;
+            el["delta"] = 0;
             callFunction = {};
+            delayTimer = {};
         }
         if (!obj) {
             throw {
                 message: "Invalid argument"
             };
         } else {
-            var propNum = 0
             for (var styleValue in obj) {
-                propNum++;
                 var eleStyle = el.style;
                 var easeVal = (!obj.hasOwnProperty('ease')) ? "linearTween" : obj['ease'];
                 if (styleValue == 'time') {
@@ -57,28 +64,34 @@ var animationObj = (function(mainObj) {
                 } else if (styleValue !== 'ease') {
                     var startVal = getStyle(el, styleValue);
                     startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
-                    startDeltaValue = 0;
+                    el["delta"] = 0;
                     var type = typeof obj[styleValue];
                     if (type !== "string" && styleValue !== "time") {
-                        setTimeout((function() {
-                            makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
-                        }), animationDelay);
+                        propNum++;
+                        var delayfunCalled = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
+                            return function() {
+                                delete delayTimer[_propNum];
+                                makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal)
+                            };
+                        })(el, startVal, styleValue, obj[styleValue], propNum);
+                        cfn(delayfunCalled, animationDelay, true);
                     }
                 }
             }
         }
     }
 
-    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, propNum, ease) {
+    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {
         isPlaying = true;
         var styleChange = el.style;
         (function() {
-            var callBackFun = callFunction[propNum] = function() {
-                if (startDeltaValue <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
-                    startDeltaValue++;
-                    var calVal = mainObj[ease](startDeltaValue, startVal, endVal - startVal, endDeltaValue) + "px";
+            var callBackFun = callFunction[_propNum_] = function() {
+                if (el["delta"] <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
+                    el["delta"] ++;
+                    var calVal = mainObj[ease](el["delta"], startVal, endVal - startVal, endDeltaValue) + "px";
                     styleChange[styleValue] = calVal;
                 } else {
+                    delete callFunction[_propNum_];
                     clearInterval(callBackFun["cid"]);
                     isPlaying = false;
                     styleChange[styleValue] = endVal + "px";
@@ -127,8 +140,13 @@ var getStyle = (function() {
     }
 }());
 var cfn = (function() {
-    var _setInterval = window.setInterval;
-    var callFunctionWithInterval = function(fn, delay) {
+    var _setInterval;
+    var callFunctionWithInterval = function(fn, delay, o) {
+        if (o) {
+            _setInterval = window.setTimeout;
+        } else {
+            _setInterval = window.setInterval;
+        }
         var id = _setInterval(function() {
             fn();
         }, delay);
