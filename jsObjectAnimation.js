@@ -12,13 +12,13 @@ function jsObject(obj) {
 jsObject.extend = function(s) {
     for (var p in s)
         this[p] = s[p];
-    return this;
 };
 var animationObj = (function(mainObj) {
     var startDeltaValue = 0;
     var endDeltaValue = 100;
     var callFunction = {};
     var isPlaying = false;
+    var animationDelay = 0;
 
     function pause() {
         if (isPlaying) {
@@ -52,13 +52,17 @@ var animationObj = (function(mainObj) {
                 var easeVal = (!obj.hasOwnProperty('ease')) ? "linearTween" : obj['ease'];
                 if (styleValue == 'time') {
                     endDeltaValue = obj[styleValue];
-                } else if(styleValue !== 'ease'){
+                } else if (styleValue == 'delay') {
+                    animationDelay = obj[styleValue];
+                } else if (styleValue !== 'ease') {
                     var startVal = getStyle(el, styleValue);
                     startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
                     startDeltaValue = 0;
                     var type = typeof obj[styleValue];
                     if (type !== "string" && styleValue !== "time") {
-                        makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                        setTimeout((function() {
+                            makeThisPropertyAnimate(el, startVal, styleValue, obj[styleValue], propNum, easeVal);
+                        }), animationDelay);
                     }
                 }
             }
