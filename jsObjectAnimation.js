@@ -37,18 +37,18 @@ var animationObj = (function(mainObj) {
                 cfn(callFunction[i], 1);
             }
             for (i in delayTimer) {
-                cfn(delayTimer[i]["cid"], true);
+                cfn(delayTimer[i], true);
             }
         }
     }
 
     function animate(el, obj) {
-        if (isPlaying) {
-            pause();
-            el["delta"] = 0;
-            callFunction = {};
-            delayTimer = {};
-        }
+        // if (isPlaying) {
+        //     pause();
+        //     el["delta"] = 0;
+        //     callFunction = {};
+        //     delayTimer = {};
+        // }
         if (!obj) {
             throw {
                 message: "Invalid argument"
@@ -64,14 +64,17 @@ var animationObj = (function(mainObj) {
                 } else if (styleValue !== 'ease') {
                     var startVal = getStyle(el, styleValue);
                     startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
-                    el["delta"] = 0;
                     var type = typeof obj[styleValue];
                     if (type !== "string" && styleValue !== "time") {
                         propNum++;
-                        var delayfunCalled = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
+                        el["delta"] = 0;
+                        stopPreviousAnimation(el,styleValue);
+                        el[styleValue + "dfp"] = propNum;
+                        var delayfunCalled = el[styleValue + "df"] = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
                             return function() {
                                 delete delayTimer[_propNum];
-                                makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal)
+                                delete _el[styleValue + "df"];
+                                makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal);
                             };
                         })(el, startVal, styleValue, obj[styleValue], propNum);
                         cfn(delayfunCalled, animationDelay, true);
@@ -81,31 +84,50 @@ var animationObj = (function(mainObj) {
         }
     }
 
-    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {
+    function stopPreviousAnimation(el,styleValue) {
+        if (el[styleValue + "df"] !== undefined) {
+            clearTimeout(el[styleValue + "df"]["cid"]);
+            delete el[styleValue + "df"];
+            delete delayTimer[el[styleValue + "dfp"]];
+            delete el[styleValue + "dfp"];
+        }
+        if (el[styleValue + "cf"] !== undefined) {
+            clearInterval(el[styleValue + "cf"]["cid"]);
+            delete el[styleValue + "cf"];
+            delete callFunction[el[styleValue + "cfp"]];
+            delete el[styleValue + "cfp"];
+        }
+    }
+
+    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {        
         isPlaying = true;
+        el["ip"] = true;
         var styleChange = el.style;
-        (function() {
-            var callBackFun = callFunction[_propNum_] = function() {
-                if (el["delta"] <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
-                    el["delta"] ++;
-                    var calVal = mainObj[ease](el["delta"], startVal, endVal - startVal, endDeltaValue) + "px";
-                    styleChange[styleValue] = calVal;
-                } else {
-                    delete callFunction[_propNum_];
-                    clearInterval(callBackFun["cid"]);
-                    isPlaying = false;
-                    styleChange[styleValue] = endVal + "px";
-                }
+        el[styleValue + "cfp"] = _propNum_;
+        var callBackFun = el[styleValue + "cf"] = callFunction[_propNum_] = function() {
+            if (el["delta"] <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
+                el["delta"] ++;
+                var calVal = mainObj[ease](el["delta"], startVal, endVal - startVal, endDeltaValue) + "px";
+                styleChange[styleValue] = calVal;                
+            } else {
+                delete callFunction[_propNum_];
+                delete el[styleValue + "cf"];
+                clearInterval(callBackFun["cid"]);
+                isPlaying = false;
+                el["ip"] = false;
+                styleChange[styleValue] = endVal + "px";
             }
-            cfn(callBackFun, 1)
-        })();
+        }
+        cfn(callBackFun, 1)
     }
 
     function linearTween(t, b, c, d) {
         return c * t / d + b;
     }
     return {
+        callFunction:callFunction,
         pause: pause,
+        delayTimer:delayTimer,
         animate: animate,
         linearTween: linearTween,
     }

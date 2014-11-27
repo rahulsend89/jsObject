@@ -2,7 +2,7 @@
 
 <head>
     <title>testAni</title>
-    <script type="text/javascript" src="jsObjectAnimation-min.js"></script>
+    <script type="text/javascript" src="jsObjectAnimation.js"></script>
     <script type="text/javascript" src="easeFunction-min.js"></script>
     <style type="text/css">
     .box {
@@ -37,7 +37,7 @@
         for (var i = allObjects.length - 1; i >= 0; i--) {            
             var animateObject = jsObject(allObjects[i]);
             animateObject.animate({
-                delay:i*1000,
+                delay:i*300,
                 time: 200,
                 //ease:"easeInElastic",
                 left: initX,
@@ -53,8 +53,12 @@
         initX += moveVal;
         animateMyBlock();
     }
+    function pause(){
+        jsObject.pause();
+    }
     </script>
     <br/>
     <input type="button" onclick="moveRight()" value="moveRight" />
     <input type="button" onclick="moveLeft()" value="moveLeft" />
+    <input type="button" onclick="pause()" value="pauseAnimation" />
 </body>
