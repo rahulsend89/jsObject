@@ -125,9 +125,7 @@ var animationObj = (function(mainObj) {
         return c * t / d + b;
     }
     return {
-        callFunction: callFunction,
         pause: pause,
-        delayTimer: delayTimer,
         animate: animate,
         linearTween: linearTween,
     }
