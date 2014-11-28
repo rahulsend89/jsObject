@@ -18,6 +18,7 @@ var animationObj = (function(mainObj) {
     var endDeltaValue = 100;
     var callFunction = {};
     var delayTimer = {};
+    var delaySTimer = {};
     var isPlaying = false;
     var animationDelay = 0;
     var propNum = 0
@@ -37,18 +38,12 @@ var animationObj = (function(mainObj) {
                 cfn(callFunction[i], 1);
             }
             for (i in delayTimer) {
-                cfn(delayTimer[i], true);
+                cfn(delayTimer[i], delaySTimer[i], true);
             }
         }
     }
 
     function animate(el, obj) {
-        // if (isPlaying) {
-        //     pause();
-        //     el["delta"] = 0;
-        //     callFunction = {};
-        //     delayTimer = {};
-        // }
         if (!obj) {
             throw {
                 message: "Invalid argument"
@@ -68,11 +63,13 @@ var animationObj = (function(mainObj) {
                     if (type !== "string" && styleValue !== "time") {
                         propNum++;
                         el["delta"] = 0;
-                        stopPreviousAnimation(el,styleValue);
+                        stopPreviousAnimation(el, styleValue);
                         el[styleValue + "dfp"] = propNum;
+                        delaySTimer[propNum] = animationDelay;
                         var delayfunCalled = el[styleValue + "df"] = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
                             return function() {
                                 delete delayTimer[_propNum];
+                                delete delaySTimer[_propNum];
                                 delete _el[styleValue + "df"];
                                 makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal);
                             };
@@ -84,12 +81,13 @@ var animationObj = (function(mainObj) {
         }
     }
 
-    function stopPreviousAnimation(el,styleValue) {
+    function stopPreviousAnimation(el, styleValue) {
         if (el[styleValue + "df"] !== undefined) {
             clearTimeout(el[styleValue + "df"]["cid"]);
             delete el[styleValue + "df"];
             delete delayTimer[el[styleValue + "dfp"]];
             delete el[styleValue + "dfp"];
+            delete delaySTimer[el[styleValue + "dfp"]];
         }
         if (el[styleValue + "cf"] !== undefined) {
             clearInterval(el[styleValue + "cf"]["cid"]);
@@ -99,22 +97,24 @@ var animationObj = (function(mainObj) {
         }
     }
 
-    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {        
+    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {
         isPlaying = true;
-        el["ip"] = true;
         var styleChange = el.style;
         el[styleValue + "cfp"] = _propNum_;
         var callBackFun = el[styleValue + "cf"] = callFunction[_propNum_] = function() {
             if (el["delta"] <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
                 el["delta"] ++;
                 var calVal = mainObj[ease](el["delta"], startVal, endVal - startVal, endDeltaValue) + "px";
-                styleChange[styleValue] = calVal;                
-            } else {
-                delete callFunction[_propNum_];
-                delete el[styleValue + "cf"];
-                clearInterval(callBackFun["cid"]);
-                isPlaying = false;
-                el["ip"] = false;
+                styleChange[styleValue] = calVal;
+            } else {                
+                stopPreviousAnimation(el, styleValue);
+                var element_count = 0;
+                for (e in callFunction) {
+                    element_count++;
+                }
+                if (!element_count) {
+                    isPlaying = false;
+                }
                 styleChange[styleValue] = endVal + "px";
             }
         }
@@ -125,9 +125,9 @@ var animationObj = (function(mainObj) {
         return c * t / d + b;
     }
     return {
-        callFunction:callFunction,
+        callFunction: callFunction,
         pause: pause,
-        delayTimer:delayTimer,
+        delayTimer: delayTimer,
         animate: animate,
         linearTween: linearTween,
     }
