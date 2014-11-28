@@ -4,6 +4,7 @@
     <title>testAni</title>
     <script type="text/javascript" src="jsObjectAnimation.js"></script>
     <script type="text/javascript" src="easeFunction-min.js"></script>
+    <script type="text/javascript" src="textSplit.js"></script>
     <style type="text/css">
     .box {
         display: inline-block;
@@ -17,6 +18,9 @@
         padding: 30px;
         border: 1px black solid;
         width: 200px;
+    }
+    #splitId {
+        font-size: 30px;
     }
     </style>
 </head>
@@ -33,32 +37,57 @@
     var allObjects = ele.el.children;
     var initX = 10;
     var moveVal = 100;
+
     function animateMyBlock() {
-        for (var i = allObjects.length - 1; i >= 0; i--) {            
+        for (var i = allObjects.length - 1; i >= 0; i--) {
             var animateObject = jsObject(allObjects[i]);
             animateObject.animate({
-                delay:i*300,
+                delay: i * 300,
                 time: 200,
                 //ease:"easeInElastic",
                 left: initX,
-                width:Math.random()*100+20
+                width: Math.random() * 100 + 20
             });
         };
     }
+
     function moveLeft() {
         initX -= moveVal;
         animateMyBlock();
     }
+
     function moveRight() {
         initX += moveVal;
         animateMyBlock();
     }
-    function pause(){
+
+    function pause() {
         jsObject.pause();
     }
     </script>
     <br/>
+    <div id="splitId">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+    <script type="text/javascript">
+    var testObjects = jsObject("splitId");
+    function callBackFun() {
+        testObjects.revert();
+    }
+    function animateLetters() {
+        var expandObject = testObjects.expand();
+        words = expandObject.rvalue.allchar;
+        for (var i = 0; i < words.length; i++) {
+            var animateObject = jsObject(words[i]);
+            animateObject.animate({
+                delay: i * 7,
+                time: 300,
+                ease: "easeOutElastic",
+                top: 230,
+            }, callBackFun);
+        };
+    }
+    </script>
     <input type="button" onclick="moveRight()" value="moveRight" />
     <input type="button" onclick="moveLeft()" value="moveLeft" />
-    <input type="button" onclick="pause()" value="pauseAnimation" />
+    <input type="button" onclick="pause()" value="PauseAnimation" />
+    <input type="button" onclick="animateLetters()" value="textAnimation" />
 </body>

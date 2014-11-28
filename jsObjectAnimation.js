@@ -19,9 +19,12 @@ var animationObj = (function(mainObj) {
     var callFunction = {};
     var delayTimer = {};
     var delaySTimer = {};
+    var startTimer = {};
+    var pauseTimer = {};
     var isPlaying = false;
     var animationDelay = 0;
     var propNum = 0
+    var animationDone = function(){}
 
     function pause() {
         if (isPlaying) {
@@ -30,6 +33,7 @@ var animationObj = (function(mainObj) {
                 clearInterval(callFunction[i]["cid"]);
             }
             for (i in delayTimer) {
+                pauseTimer[i] = new Date();
                 clearTimeout(delayTimer[i]["cid"]);
             }
         } else {
@@ -38,12 +42,13 @@ var animationObj = (function(mainObj) {
                 cfn(callFunction[i], 1);
             }
             for (i in delayTimer) {
-                cfn(delayTimer[i], delaySTimer[i], true);
+                var calTimer = delaySTimer[i] -= pauseTimer[i] - startTimer[i];                
+                cfn(delayTimer[i],calTimer, true);
             }
         }
     }
 
-    function animate(el, obj) {
+    function animate(el, obj,callback) {
         if (!obj) {
             throw {
                 message: "Invalid argument"
@@ -66,12 +71,15 @@ var animationObj = (function(mainObj) {
                         stopPreviousAnimation(el, styleValue);
                         el[styleValue + "dfp"] = propNum;
                         delaySTimer[propNum] = animationDelay;
+                        startTimer[propNum] = new Date();
                         var delayfunCalled = el[styleValue + "df"] = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
                             return function() {
-                                delete delayTimer[_propNum];
+                                delete delayTimer[_propNum];                                
                                 delete delaySTimer[_propNum];
+                                delete startTimer[_propNum];
+                                delete pauseTimer[_propNum];
                                 delete _el[styleValue + "df"];
-                                makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal);
+                                makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal,callback);
                             };
                         })(el, startVal, styleValue, obj[styleValue], propNum);
                         cfn(delayfunCalled, animationDelay, true);
@@ -88,6 +96,8 @@ var animationObj = (function(mainObj) {
             delete delayTimer[el[styleValue + "dfp"]];
             delete el[styleValue + "dfp"];
             delete delaySTimer[el[styleValue + "dfp"]];
+            delete startTimer[el[styleValue + "dfp"]];
+            delete pauseTimer[el[styleValue + "dfp"]];
         }
         if (el[styleValue + "cf"] !== undefined) {
             clearInterval(el[styleValue + "cf"]["cid"]);
@@ -97,7 +107,7 @@ var animationObj = (function(mainObj) {
         }
     }
 
-    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease) {
+    function makeThisPropertyAnimate(el, startVal, styleValue, endVal, _propNum_, ease,callback) {
         isPlaying = true;
         var styleChange = el.style;
         el[styleValue + "cfp"] = _propNum_;
@@ -114,6 +124,7 @@ var animationObj = (function(mainObj) {
                 }
                 if (!element_count) {
                     isPlaying = false;
+                    if(callback){callback();}
                 }
                 styleChange[styleValue] = endVal + "px";
             }
@@ -132,8 +143,8 @@ var animationObj = (function(mainObj) {
 })(jsObject);
 jsObject.extend(animationObj);
 jsObject.prototype = {
-    animate: function(obj) {
-        jsObject.animate(this.el, obj);
+    animate: function(obj,callback) {
+        jsObject.animate(this.el, obj,callback);
         return this;
     },
     pause: function() {
@@ -170,7 +181,7 @@ var cfn = (function() {
         var id = _setInterval(function() {
             fn();
         }, delay);
-        fn["cid"] = id;
+        fn["cid"] = id;        
         return id;
     }
     return callFunctionWithInterval;
