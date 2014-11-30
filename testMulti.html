@@ -1,5 +1,5 @@
+<!DOCTYPE html>
 <html>
-
 <head>
     <title>testAni</title>
     <script type="text/javascript" src="min/jsObjectAnimation-min.js"></script>
@@ -78,16 +78,15 @@
 
     function animateLetters() {
         if (!textAlreadyExpand) {
-            var expandObject = testObjects.expand();
+            var expandObject = testObjects.expand(),randomXpos = 250;
             textAlreadyExpand = true;
             words = expandObject.rvalue.allchar;
-            for (var i = 0; i < words.length; i++) {
-                var animateObject = jsObject(words[i]);
-                animateObject.animate({
+            for (var i = 0,len=words.length;i <len ; i++) {
+                jsObject(words[i]).animate({
                     delay: i * 7,
                     time: 300,
                     ease: "easeOutElastic",
-                    top: 230,
+                    top: randomXpos,
                 }, callBackFun);
             };
         }

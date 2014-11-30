@@ -1,101 +1,121 @@
-log = function(val) {
-    console.log(val);
-}
-/**
- * Making Prototype of ar[string] using loop
- */
-var arForFunClass = ["addClass", "removeClass", "toggleClass", "hasClass", "css", "click", "mouseover", "mouseout", "addEvent", "removeEvent"];
-for (var inc = 0; inc < arForFunClass.length; inc++) {
-    var tempVal = arForFunClass[inc];
-    jsObject.prototype[tempVal] = (function(arVar) {
-        if (arVar == "css") {
-            return function(css, value) {
-                jsObject[arVar](this.el, css, value);
-            }
-        } else if (arVar == "click" || arVar == "mouseover" || arVar == "mouseout") {
-            return function(fn) {
-                var that = this;
-                jsObject.addEvent(this.el, arVar, function(e) {
-                    fn.call(that, e);
-                });
-                return this;
-            };
-
-        }else if(arVar=="addEvent"||arVar=="removeEvent"){
-            return function(evt,fn) {
-                var that = this;
-                jsObject[arVar](this.el, evt, function(e) {
-                    fn.call(that, e);
-                });
-                return this;
-            };
-        } else {
-            return function(classVal) {
-                jsObject[arVar](this.el, classVal);
-                return this;
-            }
-        }
-    })(tempVal);
-}
-
-/*** Event static methods ***/
-if (typeof addEventListener !== "undefined") {
-    jsObject.addEvent = function(obj, evt, fn) {
-        obj.addEventListener(evt, fn, false);
-    };
-
-    jsObject.removeEvent = function(obj, evt, fn) {
-        obj.removeEventListener(evt, fn, false);
-    };
-} else if (typeof attachEvent !== "undefined") {
-    jsObject.addEvent = function(obj, evt, fn) {
-        var fnHash = "e_" + evt + fn;
-
-        obj[fnHash] = function() {
-            var type = event.type,
-                relatedTarget = null;
-
-            if (type === "mouseover" || type === "mouseout") {
-                relatedTarget = (type === "mouseover") ? event.fromElement : event.toElement;
-            }
-
-            fn.call(obj, {
-                target: event.srcElement,
-                type: type,
-                relatedTarget: relatedTarget,
-                _event: event,
-                preventDefault: function() {
-                    this._event.returnValue = false;
-                },
-                stopPropagation: function() {
-                    this._event.cancelBubble = true;
+(function(mainObj) {
+    var arForFunClass = ["addClass", "removeClass", "toggleClass", "hasClass", "css", "click", "mouseover", "mouseout", "addEvent", "removeEvent"];
+    for (var inc = 0, len = arForFunClass.length; inc < len; inc++) {
+        var tempVal = arForFunClass[inc];
+        mainObj.prototype[tempVal] = (function(arVar) {
+            if (arVar == "css") {
+                return function(css, value) {
+                    mainObj[arVar](this.el, css, value);
                 }
-            });
+            } else if (arVar == "click" || arVar == "mouseover" || arVar == "mouseout") {
+                return function(fn) {
+                    var that = this;
+                    mainObj.addEvent(this.el, arVar, function(e) {
+                        fn.call(that, e);
+                    });
+                    return this;
+                };
+
+            } else if (arVar == "addEvent" || arVar == "removeEvent") {
+                return function(evt, fn) {
+                    var that = this;
+                    mainObj[arVar](this.el, evt, function(e) {
+                        fn.call(that, e);
+                    });
+                    return this;
+                };
+            } else {
+                return function(classVal) {
+                    mainObj[arVar](this.el, classVal);
+                    return this;
+                }
+            }
+        })(tempVal);
+    }
+    if (typeof addEventListener !== "undefined") {
+        mainObj.addEvent = function(obj, evt, fn) {
+            obj.addEventListener(evt, fn, false);
         };
 
-        obj.attachEvent("on" + evt, obj[fnHash]);
+        mainObj.removeEvent = function(obj, evt, fn) {
+            obj.removeEventListener(evt, fn, false);
+        };
+    } else if (typeof attachEvent !== "undefined") {
+        mainObj.addEvent = function(obj, evt, fn) {
+            var fnHash = "e_" + evt + fn;
+
+            obj[fnHash] = function() {
+                var type = event.type,
+                    relatedTarget = null;
+
+                if (type === "mouseover" || type === "mouseout") {
+                    relatedTarget = (type === "mouseover") ? event.fromElement : event.toElement;
+                }
+
+                fn.call(obj, {
+                    target: event.srcElement,
+                    type: type,
+                    relatedTarget: relatedTarget,
+                    _event: event,
+                    preventDefault: function() {
+                        this._event.returnValue = false;
+                    },
+                    stopPropagation: function() {
+                        this._event.cancelBubble = true;
+                    }
+                });
+            };
+
+            obj.attachEvent("on" + evt, obj[fnHash]);
+        };
+
+        mainObj.removeEvent = function(obj, evt, fn) {
+            var fnHash = "e_" + evt + fn;
+
+            if (typeof obj[fnHash] !== "undefined") {
+                obj.detachEvent("on" + evt, obj[fnHash]);
+                delete obj[fnHash];
+            }
+        };
+    } else {
+        mainObj.addEvent = function(obj, evt, fn) {
+            obj["on" + evt] = fn;
+        };
+
+        mainObj.removeEvent = function(obj, evt, fn) {
+            obj["on" + evt] = null;
+        };
+    }
+    mainObj.prototype.append = function(data) {
+        if (typeof data.nodeType !== "undefined" && data.nodeType === 1) {
+            this.el.appendChild(data);
+        } else if (data instanceof jsObject) {
+            this.el.appendChild(data.el);
+        } else if (typeof data === "string") {
+            var html = this.el.innerHTML;
+
+            this.el.innerHTML = html + data;
+        }
+
+        return this;
     };
 
-    jsObject.removeEvent = function(obj, evt, fn) {
-        var fnHash = "e_" + evt + fn;
+    mainObj.prototype.html = function(html) {
+        if (typeof html !== "undefined") {
+            this.el.innerHTML = html;
 
-        if (typeof obj[fnHash] !== "undefined") {
-            obj.detachEvent("on" + evt, obj[fnHash]);
-            delete obj[fnHash];
+            return this;
+        } else {
+            return this.el.innerHTML;
         }
     };
-} else {
-    jsObject.addEvent = function(obj, evt, fn) {
-        obj["on" + evt] = fn;
-    };
-
-    jsObject.removeEvent = function(obj, evt, fn) {
-        obj["on" + evt] = null;
-    };
-}
-
-/*** Style static methods ***/
-jsObject.extend({
+    if (typeof String.prototype.trim === "undefined") {
+        String.prototype.trim = function() {
+            return this.replace(/^\s+/, "").replace(/\s+$/, "");
+        };
+    }
+    return mainObj;
+})(jsObject).extend({
     css: function(el, css, value) {
         var cssType = typeof css,
             valueType = typeof value,
@@ -207,59 +227,3 @@ jsObject.extend({
         return el;
     }
 });
-
-
-
-/*** DOM Object Stuff ***/
-
-jsObject.parseXML = function(data) {
-    var xml, tmp;
-    if (!data || typeof data !== "string") {
-        return null;
-    }
-
-    // Support: IE9
-    try {
-        tmp = new DOMParser();
-        xml = tmp.parseFromString(data, "text/xml");
-    } catch (e) {
-        xml = undefined;
-    }
-
-    if (!xml || xml.getElementsByTagName("parsererror").length) {
-        //error
-    }
-    return xml;
-};
-
-jsObject.prototype.append = function(data) {
-    if (typeof data.nodeType !== "undefined" && data.nodeType === 1) {
-        this.el.appendChild(data);
-    } else if (data instanceof jsObject) {
-        this.el.appendChild(data.el);
-    } else if (typeof data === "string") {
-        var html = this.el.innerHTML;
-
-        this.el.innerHTML = html + data;
-    }
-
-    return this;
-};
-
-jsObject.prototype.html = function(html) {
-    if (typeof html !== "undefined") {
-        this.el.innerHTML = html;
-
-        return this;
-    } else {
-        return this.el.innerHTML;
-    }
-};
-
-/*** Helper Functions ***/
-/*** Language Extensions ***/
-if (typeof String.prototype.trim === "undefined") {
-    String.prototype.trim = function() {
-        return this.replace(/^\s+/, "").replace(/\s+$/, "");
-    };
-}
