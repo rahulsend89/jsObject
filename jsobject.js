@@ -1,5 +1,47 @@
 (function(mainObj) {
-    var arForFunClass = ["addClass", "removeClass", "toggleClass", "hasClass", "css", "click", "mouseover", "mouseout", "addEvent", "removeEvent"];
+    var arForFunClass = ["addClass", "removeClass", "toggleClass", "hasClass", "css", "click", "mouseover", "mouseout", "addEvent", "removeEvent"],
+        readyList = [],
+        readyFired = false,
+        readyEventHandlersInstalled = false,
+        ready = function() {
+            if (!readyFired) {
+                readyFired = true;
+                for (var i = 0; i < readyList.length; i++) {
+                    readyList[i].fn.call(window, readyList[i].ctx);
+                }
+                readyList = [];
+            }
+        },
+        readyStateChange = function() {
+            if (document.readyState === "complete") {
+                ready();
+            }
+        };
+    mainObj.onReady = function(callback, context) {
+        if (readyFired) {
+            setTimeout(function() {
+                callback(context);
+            }, 1);
+            return;
+        } else {
+            readyList.push({
+                fn: callback,
+                ctx: context
+            });
+        }
+        if (document.readyState === "complete") {
+            setTimeout(ready, 1);
+        } else if (!readyEventHandlersInstalled) {
+            if (document.addEventListener) {
+                document.addEventListener("DOMContentLoaded", ready, false);
+                window.addEventListener("load", ready, false);
+            } else {
+                document.attachEvent("onreadystatechange", readyStateChange);
+                window.attachEvent("onload", ready);
+            }
+            readyEventHandlersInstalled = true;
+        }
+    }
     for (var inc = 0, len = arForFunClass.length; inc < len; inc++) {
         var tempVal = arForFunClass[inc];
         mainObj.prototype[tempVal] = (function(arVar) {
@@ -99,7 +141,6 @@
 
         return this;
     };
-
     mainObj.prototype.html = function(html) {
         if (typeof html !== "undefined") {
             this.el.innerHTML = html;
@@ -199,7 +240,6 @@
                 message: "Invalid argument"
             };
         }
-
         var el = document.createElement(obj.tagName);
         obj.id && (el.id = obj.id);
         obj.className && (el.className = obj.className);
