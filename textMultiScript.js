@@ -16,11 +16,11 @@ jsObject.onReady(function() {
             for (var i = allObjects.length - 1; i >= 0; i--) {
                 var animateObject = jsObject(allObjects[i]);
                 animateObject.animate({
-                    delay: i * 300,
-                    time: 200,
-                    //ease:"easeInElastic",
-                    left: initX,
-                    width: Math.random() * 100 + 20
+                    delay: i * 7,
+                    time: 300,
+                    ease:"easeInOutElastic",                    
+                    top: initX,
+                    width: Math.random() * 10 + 5
                 });
             };
         },
@@ -39,9 +39,6 @@ jsObject.onReady(function() {
             testObjects.revert();
             textAlreadyExpand = false;
         },
-        callbackelement = function(e) {
-
-        },
         animateLetters = function() {
             if (!textAlreadyExpand) {
                 var expandObject = testObjects.expand(),
@@ -49,12 +46,12 @@ jsObject.onReady(function() {
                 textAlreadyExpand = true;
                 words = expandObject.rvalue.allchar;
                 for (var i = 0, len = words.length; i < len; i++) {
-                    var delay = i * 10;
+                    var delay = i * 20;
                     jsObject(words[i]).animate({
                         time: 60,
                         delay: delay,
                         ease: "easeInBack",
-                        "font-size": randomXpos,
+                        //"font-size": randomXpos,
                         top: -20,
                     }).el["acb"] = function() {
                         jsObject(this).animate({
@@ -62,7 +59,7 @@ jsObject.onReady(function() {
                             delay: 0,
                             top: 0,
                             ease: "easeOutBack",
-                            "font-size": 30,
+                            //"font-size": 30,
                         }, callBackFun).toggleClass("toggle").el["acb"] = function() {
                             jsObject.toggleClass(this, "toggle");
                         };

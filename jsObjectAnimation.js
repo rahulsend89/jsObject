@@ -51,32 +51,41 @@ function jsObject(obj) {
             return callFunctionWithInterval;
         })(),
         stopPreviousAnimation = function(el, styleValue, b, c) {
-            if (el[styleValue + "df"] !== undefined) {
-                clearTimeout(el[styleValue + "df"]["cid"]);
+            var df = el[styleValue + "df"],
+                dfp = el[styleValue + "dfp"],
+                cf = el[styleValue + "cf"],
+                cfp = el[styleValue + "cfp"],
+                acb = el["acb"];
+            if (df !== undefined) {
+                clearTimeout(df["cid"]);
                 delete el[styleValue + "df"];
-                delete delayTimer[el[styleValue + "dfp"]];
                 delete el[styleValue + "dfp"];
-                delete delaySTimer[el[styleValue + "dfp"]];
-                delete startTimer[el[styleValue + "dfp"]];
-                delete pauseTimer[el[styleValue + "dfp"]];
+                delete delayTimer[dfp];
+                delete delaySTimer[dfp];
+                delete startTimer[dfp];
+                delete pauseTimer[dfp];
             }
-            if (!b && (el[styleValue + "cf"] !== undefined)) {
-                clearInterval(el[styleValue + "cf"]["cid"]);
-                delete el[styleValue + "cf"];
-                delete callFunction[el[styleValue + "cfp"]];
-                delete el[styleValue + "cfp"];
+            if (!b) {
+                if (cf !== undefined) {
+                    clearInterval(cf["cid"]);
+                    delete el[styleValue + "cf"];
+                    delete callFunction[cfp];
+                    delete el[styleValue + "cfp"];
+                }
             }
-            if (c && (el["acb"] !== undefined)) {
-                el["n"]--;
-                if (!el["n"]) {
-                    el["acb"]();
+            if (c) {
+                if (acb !== undefined) {
+                    el["n"] --;
+                    if (!el["n"]) {
+                        el["acb"]();
+                    }
                 }
             }
         },
         makeThisPropertyAnimate = function(el, startVal, styleValue, endVal, _propNum_, ease, callback) {
             isPlaying = true;
             var styleChange = el.style;
-            el[styleValue + "cfp"] = _propNum_;
+            el[styleValue + "cfp"] = _propNum_;            
             var callBackFun = el[styleValue + "cf"] = callFunction[_propNum_] = function() {
                 if (el["dt"] <= el["et"] && (styleChange[styleValue] !== endVal + "px")) {
                     el["dt"] ++;
