@@ -48,6 +48,7 @@
             if (arVar == "css") {
                 return function(css, value) {
                     mainObj[arVar](this.el, css, value);
+                    return this;
                 }
             } else if (arVar == "click" || arVar == "mouseover" || arVar == "mouseout") {
                 return function(fn) {

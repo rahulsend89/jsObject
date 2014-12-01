@@ -17,7 +17,6 @@ function jsObject(obj) {
         startTimer = {},
         pauseTimer = {},
         isPlaying = false,
-        animationDelay = 0,
         propNum = 0,
         toCamelCase = function(str) {
             return str.replace(/-([a-z])/ig, function(all, letter) {
@@ -51,7 +50,7 @@ function jsObject(obj) {
             }
             return callFunctionWithInterval;
         })(),
-        stopPreviousAnimation = function(el, styleValue, b) {
+        stopPreviousAnimation = function(el, styleValue, b, c) {
             if (el[styleValue + "df"] !== undefined) {
                 clearTimeout(el[styleValue + "df"]["cid"]);
                 delete el[styleValue + "df"];
@@ -61,11 +60,17 @@ function jsObject(obj) {
                 delete startTimer[el[styleValue + "dfp"]];
                 delete pauseTimer[el[styleValue + "dfp"]];
             }
-            if ((el[styleValue + "cf"] !== undefined) && !b) {
+            if (!b && (el[styleValue + "cf"] !== undefined)) {
                 clearInterval(el[styleValue + "cf"]["cid"]);
                 delete el[styleValue + "cf"];
                 delete callFunction[el[styleValue + "cfp"]];
                 delete el[styleValue + "cfp"];
+            }
+            if (c && (el["acb"] !== undefined)) {
+                el["n"]--;
+                if (!el["n"]) {
+                    el["acb"]();
+                }
             }
         },
         makeThisPropertyAnimate = function(el, startVal, styleValue, endVal, _propNum_, ease, callback) {
@@ -73,11 +78,11 @@ function jsObject(obj) {
             var styleChange = el.style;
             el[styleValue + "cfp"] = _propNum_;
             var callBackFun = el[styleValue + "cf"] = callFunction[_propNum_] = function() {
-                if (el["dt"] <= endDeltaValue && (styleChange[styleValue] !== endVal + "px")) {
+                if (el["dt"] <= el["et"] && (styleChange[styleValue] !== endVal + "px")) {
                     el["dt"] ++;
-                    styleChange[styleValue] = mainObj[ease](el["dt"], startVal, endVal - startVal, endDeltaValue) + "px";
+                    styleChange[styleValue] = mainObj[ease](el["dt"], startVal, endVal - startVal, el["et"]) + "px";
                 } else {
-                    stopPreviousAnimation(el, styleValue);
+                    stopPreviousAnimation(el, styleValue, false, true);
                     var element_count = 0;
                     for (e in callFunction) {
                         element_count++;
@@ -111,6 +116,7 @@ function jsObject(obj) {
             for (i in delayTimer) {
                 var calTimer = delaySTimer[i] -= pauseTimer[i] - startTimer[i];
                 cfn(delayTimer[i], calTimer, true);
+                startTimer[i] = +new Date();
             }
         }
     }
@@ -120,29 +126,31 @@ function jsObject(obj) {
                 message: "Invalid argument"
             };
         } else {
+            var easeVal = (!obj.hasOwnProperty('ease')) ? "linearTween" : obj['ease'],
+                animationDelay = obj["delay"] || 0,
+                numVal = 0;
+            el["et"] = obj["time"] || 0;
             for (var styleValue in obj) {
-                var easeVal = (!obj.hasOwnProperty('ease')) ? "linearTween" : obj['ease'];
-                if (styleValue == 'time') {
-                    endDeltaValue = obj[styleValue];
-                } else if (styleValue == 'delay') {
-                    animationDelay = obj[styleValue];
-                } else if (styleValue !== 'ease') {
-                    var startVal = getStyle(el, styleValue),
+                if (styleValue !== 'ease' && styleValue !== 'delay' && styleValue !== 'time') {
+                    var newstyleValue = toCamelCase(styleValue),
+                        startVal = getStyle(el, styleValue),
                         type = typeof obj[styleValue];
-                    startVal = (isNaN(parseInt(startVal))) ? 10 : parseInt(startVal);
-                    if (type !== "string" && styleValue !== "time") {
+                    startVal = (isNaN(parseInt(startVal))) ? 0 : parseInt(startVal);
+                    if (type !== "string") {
+                        numVal++;
                         propNum++;
                         el["dt"] = 0;
-                        stopPreviousAnimation(el, styleValue);
-                        el[styleValue + "dfp"] = propNum;
+                        el["n"] = numVal;
+                        stopPreviousAnimation(el, newstyleValue);
+                        el[newstyleValue + "dfp"] = propNum;
                         delaySTimer[propNum] = animationDelay;
-                        startTimer[propNum] = new Date();
-                        var delayfunCalled = el[styleValue + "df"] = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
+                        startTimer[propNum] = +new Date();
+                        var delayfunCalled = el[newstyleValue + "df"] = delayTimer[propNum] = (function(_el, _startVal, _styleValue, _obj_styleValue, _propNum) {
                             return function() {
                                 stopPreviousAnimation(_el, _styleValue, true);
                                 makeThisPropertyAnimate(_el, _startVal, _styleValue, _obj_styleValue, _propNum, easeVal, callback);
                             };
-                        })(el, startVal, styleValue, obj[styleValue], propNum);
+                        })(el, startVal, newstyleValue, obj[styleValue], propNum);
                         cfn(delayfunCalled, animationDelay, true);
                     }
                 }
