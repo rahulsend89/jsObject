@@ -1,5 +1,6 @@
 jsObject.onReady(function() {
     var ele = jsObject("main"),
+        maxObj =  90,
         allObjects = ele.el.children,
         initX = 10,
         moveVal = 100,
@@ -18,7 +19,7 @@ jsObject.onReady(function() {
                 animateObject.animate({
                     delay: i * 7,
                     time: 300,
-                    ease:"easeInOutElastic",                    
+                    ease: "easeInOutElastic",
                     top: initX,
                     width: Math.random() * 10 + 5
                 });
@@ -51,7 +52,7 @@ jsObject.onReady(function() {
                         time: 60,
                         delay: delay,
                         ease: "easeInBack",
-                        //"font-size": randomXpos,
+                        "font-size": randomXpos,
                         top: -20,
                     }).el["acb"] = function() {
                         jsObject(this).animate({
@@ -59,14 +60,23 @@ jsObject.onReady(function() {
                             delay: 0,
                             top: 0,
                             ease: "easeOutBack",
-                            //"font-size": 30,
+                            "font-size": 30,
                         }, callBackFun).toggleClass("toggle").el["acb"] = function() {
                             jsObject.toggleClass(this, "toggle");
                         };
                     };
                 };
             }
-        }
+        };
+
+    for (var i = 1; i <= maxObj; i++) {
+        var mySpan = jsObject.createElement({
+            tagName: "span",
+            className: "box"            
+        });
+        jsObject("main").el.appendChild(mySpan);
+    };
+
     jsObject.addEvent(document, "keydown", callback);
     jsObject(f.moveRight).click(moveRight);
     jsObject(f.pause).click(pause);
