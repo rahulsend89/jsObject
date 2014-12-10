@@ -11,7 +11,7 @@
                 url: "https://itunesu.itunes.apple.com/feed/id385633199",//
                 success: function(response) {
                     jsObject("myDiv").el.innerHTML = response;
-                    console.log(JSON.parse(response));
+                    console.log(jsObject.parseXml(response));
                 },
             });
         });
