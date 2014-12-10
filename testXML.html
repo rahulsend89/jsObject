@@ -3,7 +3,6 @@
 
 <head>
     <script>
-    var Obj = {};
     var parseXml = function(xml) {
         var dom = null;
         if (window.DOMParser) {
@@ -56,24 +55,40 @@
         return result;
     }
 
-    function loadData(url) {
-        //var proxyJsonp = "http://anyorigin.com/get";
-        //url = encodeURI(url).replace(/&/g, "%26");
-        //url = proxyJsonp + "?url=" + url + "&callback=?"
-        var xmlhttp;
-        if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+    function ajxCall(Obj) {
+        var xmlhttp,
+            postData = Obj["data"] ? "GET" : "POST",
+            params = postData ? ObjToParams(Obj["data"]) : undefined,
+            mimetype = Obj["mimetype"] ? Obj["mimetype"] : "text/plain",
+            url = Obj["url"],
+            callback = Obj["success"];
+        if (window.XMLHttpRequest) {
             xmlhttp = new XMLHttpRequest();
-        } else { // code for IE6, IE5
+        } else {
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         xmlhttp.onreadystatechange = function() {
             if (xmlhttp.readyState == 4 /*&& xmlhttp.status == 200*/ ) {
-                Obj = parseXml(xmlhttp.response);
+                callback(xmlhttp.response);
                 document.getElementById("myDiv").innerHTML = xmlhttp.response;
             }
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.send();
+        xmlhttp.open(postData, url, true);
+        xmlhttp.setRequestHeader("Content-type", mimetype);
+        xmlhttp.setRequestHeader("Content-length", params.length);
+        xmlhttp.send(params);
+    }
+
+    function ObjToParams(obj) {
+        var str = "",
+            var key;
+        for (key in obj) {
+            if (str != "") {
+                str += "&";
+            }
+            str += key + "=" + encodeURIComponent(obj[key]);
+        };
+        return str;
     }
     </script>
 </head>
