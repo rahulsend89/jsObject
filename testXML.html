@@ -2,103 +2,28 @@
 <html>
 
 <head>
+    <script type="text/javascript" src="min/jsObjectAnimation-min.js"></script>
+    <script type="text/javascript" src="min/jsobject-min.js"></script>
     <script>
-    var parseXml = function(xml) {
-        var dom = null;
-        if (window.DOMParser) {
-            dom = (new DOMParser()).parseFromString(xml, "text/xml");
-        } else if (window.ActiveXObject) {
-            dom = new ActiveXObject('Microsoft.XMLDOM');
-            dom.async = false;
-            if (!dom.loadXML(xml)) {
-                throw dom.parseError.reason + " " + dom.parseError.srcText;
-            }
-        } else {
-            throw "cannot parse xml string!";
-        }
-
-        function parseNode(xmlNode, result) {
-            if (xmlNode.nodeName == "#text" && xmlNode.nodeValue.trim() == "") {
-                return;
-            } else {
-                var resuleNode = {};
-                var existing = result[xmlNode.nodeName];
-                if (existing) {
-                    if (!existing.length) {
-                        result[xmlNode.nodeName] = [existing, resuleNode];
-                    } else {
-                        result[xmlNode.nodeName].push(resuleNode);
-                    }
-                } else if (xmlNode.nodeName != "#text") {
-                    result[xmlNode.nodeName] = resuleNode;
-                }
-                if (xmlNode.nodeValue !== null) {
-                    result["value"] = xmlNode.nodeValue;
-                }
-                if (xmlNode.attributes) {
-                    var length = xmlNode.attributes.length;
-                    for (var i = 0; i < length; i++) {
-                        var attribute = xmlNode.attributes[i];
-                        resuleNode[attribute.nodeName] = attribute.nodeValue;
-                    }
-                }
-                var length = xmlNode.childNodes.length;
-                for (var i = 0; i < length; i++) {
-                    parseNode(xmlNode.childNodes[i], resuleNode);
-                }
-            }
-        }
-        var result = {};
-        if (dom.childNodes.length) {
-            parseNode(dom.childNodes[0], result);
-        }
-        return result;
-    }
-
-    function ajxCall(Obj) {
-        var xmlhttp,
-            postData = Obj["data"] ? "GET" : "POST",
-            params = postData ? ObjToParams(Obj["data"]) : undefined,
-            mimetype = Obj["mimetype"] ? Obj["mimetype"] : "text/plain",
-            url = Obj["url"],
-            callback = Obj["success"];
-        if (window.XMLHttpRequest) {
-            xmlhttp = new XMLHttpRequest();
-        } else {
-            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 /*&& xmlhttp.status == 200*/ ) {
-                callback(xmlhttp.response);
-                document.getElementById("myDiv").innerHTML = xmlhttp.response;
-            }
-        }
-        xmlhttp.open(postData, url, true);
-        xmlhttp.setRequestHeader("Content-type", mimetype);
-        xmlhttp.setRequestHeader("Content-length", params.length);
-        xmlhttp.send(params);
-    }
-
-    function ObjToParams(obj) {
-        var str = "",
-            var key;
-        for (key in obj) {
-            if (str != "") {
-                str += "&";
-            }
-            str += key + "=" + encodeURIComponent(obj[key]);
-        };
-        return str;
-    }
+    jsObject.onReady(function() {
+        jsObject("button").click(function() {
+            jsObject.ajxCall({
+                url: "https://itunesu.itunes.apple.com/feed/id385633199",//
+                success: function(response) {
+                    jsObject("myDiv").el.innerHTML = response;
+                    console.log(JSON.parse(response));
+                },
+            });
+        });
+    });
     </script>
 </head>
 
 <body>
-
     <div id="myDiv">
         <h2>load</h2>
     </div>
-    <button type="button" onclick="loadData('https://itunesu.itunes.apple.com/feed/id385633199');//">Change Content</button>
+    <button type="button" id="button">Change Content</button>
 
 </body>
 

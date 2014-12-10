@@ -266,5 +266,88 @@
             }
         }
         return el;
+    },
+    ObjToParams: function(obj) {
+        var str = "",
+            key;
+        for (key in obj) {
+            if (str != "") {
+                str += "&";
+            }
+            str += key + "=" + encodeURIComponent(obj[key]);
+        };
+        return str;
+    },
+    ajxCall: function(Obj) {
+        var xmlhttp,
+            postData = Obj["data"] ? "POST" : "GET",
+            params = postData ? this.ObjToParams(Obj["data"]) : undefined,
+            mimetype = Obj["mimetype"] ? Obj["mimetype"] : "text/plain",
+            url = Obj["url"];
+        if (window.XMLHttpRequest) {
+            xmlhttp = new XMLHttpRequest();
+        } else {
+            xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 /*&& xmlhttp.status == 200*/ ) {
+                Obj["success"](xmlhttp.response);
+            }
+        }
+        xmlhttp.open(postData, url, true);
+        xmlhttp.setRequestHeader("Content-type", mimetype);
+        xmlhttp.setRequestHeader("Content-length", params.length);
+        xmlhttp.send(params);
+    },
+    parseNode: function(xmlNode, result) {
+        if (xmlNode.nodeName == "#text" && xmlNode.nodeValue.trim() == "") {
+            return;
+        } else {
+            var resuleNode = {};
+            var existing = result[xmlNode.nodeName];
+            if (existing) {
+                if (!existing.length) {
+                    result[xmlNode.nodeName] = [existing, resuleNode];
+                } else {
+                    result[xmlNode.nodeName].push(resuleNode);
+                }
+            } else if (xmlNode.nodeName != "#text") {
+                result[xmlNode.nodeName] = resuleNode;
+            }
+            if (xmlNode.nodeValue !== null) {
+                result["value"] = xmlNode.nodeValue;
+            }
+            if (xmlNode.attributes) {
+                var length = xmlNode.attributes.length;
+                for (var i = 0; i < length; i++) {
+                    var attribute = xmlNode.attributes[i];
+                    resuleNode[attribute.nodeName] = attribute.nodeValue;
+                }
+            }
+            var length = xmlNode.childNodes.length;
+            for (var i = 0; i < length; i++) {
+                this.parseNode(xmlNode.childNodes[i], resuleNode);
+            }
+        }
+    },
+    parseXml: function(xml) {
+        var dom = null;
+        if (window.DOMParser) {
+            dom = (new DOMParser()).parseFromString(xml, "text/xml");
+        } else if (window.ActiveXObject) {
+            dom = new ActiveXObject('Microsoft.XMLDOM');
+            dom.async = false;
+            if (!dom.loadXML(xml)) {
+                throw dom.parseError.reason + " " + dom.parseError.srcText;
+            }
+        } else {
+            throw "cannot parse xml string!";
+        }
+
+        var result = {};
+        if (dom.childNodes.length) {
+            this.parseNode(dom.childNodes[0], result);
+        }
+        return result;
     }
 });
