@@ -296,8 +296,12 @@
         }
         xmlhttp.open(postData, url, true);
         xmlhttp.setRequestHeader("Content-type", mimetype);
-        xmlhttp.setRequestHeader("Content-length", params.length);
-        xmlhttp.send(params);
+        if (params) {
+            xmlhttp.setRequestHeader("Content-length", params.length);
+            xmlhttp.send(params);
+        } else {
+            xmlhttp.send();
+        }
     },
     parseNode: function(xmlNode, result) {
         if (xmlNode.nodeName == "#text" && xmlNode.nodeValue.trim() == "") {
