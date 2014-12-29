@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    <title>textInterval</title>
+    <script type="text/javascript" src="experimentalTween.js"></script>
+    <script type="text/javascript">
+    var count = 0;
+    function startCounter(){    	
+    	_setInterval(CallBackFuntion,1000);    	
+    }
+    function stopCounter(){
+    	_clearInterval(CallBackFuntion);
+    } 
+    function CallBackFuntion(){
+    	count++;
+    	document.getElementById("r").innerHTML = count;
+    }
+    </script>
+</head>
+
+<body>
+	<h1 id="r">Test</h1>
+    <input type="button" value="Start" onClick="startCounter()">
+    <input type="button" value="Stop" onClick="stopCounter()">
+</body>
+
+</html>

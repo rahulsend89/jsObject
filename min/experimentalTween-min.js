@@ -1,0 +1,1 @@
+var _setInterval=function(t,e){if(!t.id){var n=t.id=_getMaxCount(),i=t;return t=function(){return function(){i.apply(this,arguments),i.id&&(i.cid=setTimeout(t,e))}}(),t.call(),n}},_clearInterval=function(t){t.id=0,clearTimeout(t.cid),delete t.id,delete t.cid},_getMaxCount=function(){var t=1;return function(){return t++}}();
