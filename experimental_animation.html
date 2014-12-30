@@ -4,12 +4,13 @@
     <title>textInterval</title>
     <script type="text/javascript" src="experimentalTween.js"></script>
     <script type="text/javascript">
-    var count = 0;
+    var count = 0,
+    timer = 0;
     function startCounter(){    	
-    	_setInterval(CallBackFuntion,1000);    	
+    	timer = _setInterval(CallBackFuntion,1000);    	
     }
     function stopCounter(){
-    	_clearInterval(CallBackFuntion);
+    	_clearInterval(timer);
     } 
     function CallBackFuntion(){
     	count++;
