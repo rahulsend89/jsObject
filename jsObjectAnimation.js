@@ -18,6 +18,39 @@ function jsObject(obj) {
         pauseTimer = {},
         isPlaying = false,
         propNum = 0,
+        _setInterval = function(fn, delay) {
+            if (!fn["id"]) {
+                var timerVal = _getMaxCount(),
+                    returnVal = fn["id"] = timerVal,
+                    cached_function = fn;
+                _timerObject[timerVal] = returnVal;
+                _timerObject["fn" + timerVal] = fn;
+                fn = (function() {
+                    return function() {
+                        cached_function.apply(this, arguments);
+                        if (_timerObject[timerVal]) {
+                            cached_function["cid"] = setTimeout(fn, delay);
+                        }
+                    }
+                })();
+                fn.call();
+                return returnVal;
+            }
+        },
+        _clearInterval = function(timerVal) {
+            var str = "fn" + timerVal,
+                fn = _timerObject[str];
+            _timerObject[timerVal] = 0;
+            delete _timerObject[timerVal];
+            delete fn["cid"];
+        },
+        _getMaxCount = (function() {
+            var numCount = 1;
+            return function() {
+                return numCount++;
+            };
+        })(),
+        _timerObject = {},
         toCamelCase = function(str) {
             return str.replace(/-([a-z])/ig, function(all, letter) {
                 return letter.toUpperCase();
@@ -35,14 +68,14 @@ function jsObject(obj) {
             }
         }()),
         cfn = (function() {
-            var _setInterval;
+            var _setInt;
             var callFunctionWithInterval = function(fn, delay, o) {
                 if (o) {
-                    _setInterval = window.setTimeout;
+                    _setInt = window.setTimeout;
                 } else {
-                    _setInterval = window.setInterval;
+                    _setInt = _setInterval;
                 }
-                var id = _setInterval(function() {
+                var id = _setInt(function() {
                     fn();
                 }, delay);
                 fn["cid"] = id;
@@ -67,7 +100,7 @@ function jsObject(obj) {
             }
             if (!b) {
                 if (cf !== undefined) {
-                    clearInterval(cf["cid"]);
+                    _clearInterval(cf["cid"]);
                     delete el[styleValue + "cf"];
                     delete callFunction[cfp];
                     delete el[styleValue + "cfp"];
@@ -85,7 +118,7 @@ function jsObject(obj) {
         makeThisPropertyAnimate = function(el, startVal, styleValue, endVal, _propNum_, ease, callback) {
             isPlaying = true;
             var styleChange = el.style;
-            el[styleValue + "cfp"] = _propNum_;            
+            el[styleValue + "cfp"] = _propNum_;
             var callBackFun = el[styleValue + "cf"] = callFunction[_propNum_] = function() {
                 if (el["dt"] <= el["et"] && (styleChange[styleValue] !== endVal + "px")) {
                     el["dt"] ++;
@@ -111,7 +144,7 @@ function jsObject(obj) {
         if (isPlaying) {
             isPlaying = false;
             for (i in callFunction) {
-                clearInterval(callFunction[i]["cid"]);
+                _clearInterval(callFunction[i]["cid"]);
             }
             for (i in delayTimer) {
                 pauseTimer[i] = +new Date();
