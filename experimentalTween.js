@@ -6,9 +6,9 @@ var _setInterval = function(fn, delay) {
             _timerObject[timerVal] = returnVal;
             _timerObject["fn" + timerVal] = fn;
             fn = (function() {
-                return function() {
-                    cached_function.apply(this, arguments);
+                return function() {                    
                     if (_timerObject[timerVal]) {
+                        cached_function.apply(this, arguments);
                         cached_function["cid"] = setTimeout(fn, delay);
                     }
                 }
@@ -20,10 +20,10 @@ var _setInterval = function(fn, delay) {
     _clearInterval = function(timerVal) {
         var str = "fn" + timerVal,
             fn = _timerObject[str];
-        console.log(_timerObject + " : fn[cid]", fn + " : " + str);
-        _timerObject[timerVal] = 0;
+        _timerObject[timerVal] = undefined;
         delete _timerObject[timerVal];
         delete fn["cid"];
+        delete fn["id"];
     },
     _getMaxCount = (function() {
         var numCount = 1;
