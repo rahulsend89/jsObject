@@ -26,7 +26,7 @@
   "devDependencies": {
     "jasmine": "2.4.1",
     "semantic-release": "^4.3.5"
-  }
+  },
   "czConfig": {
     "path": "node_modules/cz-conventional-changelog"
   }
