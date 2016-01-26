@@ -5,8 +5,8 @@
   "version": "0.0.0-semantic-release",
   "scripts": {
     "commit": "git-cz",
-    "karma": "karma",
-    "test": "node_modules/karma/bin/karma start my.conf.js --single-run",
+    "test": "karma start my.conf.js",
+    "report-coverage": "cat ./coverage/lcov/lcov.info | codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -25,13 +25,15 @@
   },
   "homepage": "https://github.com/rahulsend89/jsObject#readme",
   "devDependencies": {
+    "istanbul": "0.4.2",
     "jasmine": "2.4.1",
     "karma": "0.13.19",
-    "phantomjs": "2.1.2",
     "karma-chrome-launcher": "0.2.2",
+    "karma-coverage": "0.5.3",
     "karma-firefox-launcher": "0.1.7",
     "karma-jasmine": "0.3.6",
     "karma-phantomjs-launcher": "0.2.3",
+    "phantomjs": "2.1.2",
     "semantic-release": "^4.3.5"
   },
   "czConfig": {

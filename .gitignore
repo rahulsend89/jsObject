@@ -6,6 +6,7 @@ config.codekit
 .idea/
 .codekit-cache/
 node_modules/
+coverage/
 CVS
 # automatic backup files
 *~.nib

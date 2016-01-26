@@ -130,13 +130,13 @@ function jsObject(obj) {
                     for (e in callFunction) {
                         element_count++;
                     }
+                    styleChange[styleValue] = endVal + "px";
                     if (!element_count) {
                         isPlaying = false;
                         if (callback) {
                             callback();
                         }
                     }
-                    styleChange[styleValue] = endVal + "px";
                 }
             }
             cfn(callBackFun, 1)
