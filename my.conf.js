@@ -15,9 +15,9 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        "src/*.Spec.js",
-        "src/jsObjectAnimation.js",
-        "src/jsObject.js"
+      "src/jsObjectAnimation.js",
+      "src/jsObject.js",
+      "src/*.Spec.js"
     ],
 
 
