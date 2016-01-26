@@ -1,6 +1,8 @@
 JsObject
 ========
 
+[![Build Status](https://travis-ci.org/rahulsend89/jsObject.svg?branch=master)](https://travis-ci.org/rahulsend89/jsObject)
+
 A powerful little Javascript object based library to handle simple as well as smooth animations. Linear animations, ease-in-out Cubic, ease-in-out Sine, ease-in-out-Quad, ease-in-out-Circle, ease-in-out-Elastic, ease-in-out-Bounce and lot more.  
 
 ## Make your own magic
