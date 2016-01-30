@@ -2,7 +2,7 @@
 // Generated on Tue Jan 26 2016 18:34:32 GMT+0530 (IST)
 
 module.exports = function(config) {
-  config.set({
+  var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -88,6 +88,12 @@ module.exports = function(config) {
       ]
     },
 
+    customLaunchers: {
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: Infinity,
@@ -101,5 +107,13 @@ module.exports = function(config) {
       'karma-safari-launcher',
       'karma-detect-browsers'
     ]
-  })
+  };
+  if(process.env.TRAVIS){
+    configuration.detectBrowsers = {
+          enabled : false,
+          usePhantomJS: true
+    }
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS'];
+  }
+  config.set(configuration);
 }
