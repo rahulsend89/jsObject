@@ -8,7 +8,7 @@ describe("when jsObject is included", function() {
             _element.el.className = "classOne";
             _element.el.fontSize = "20px";
             _element.el.backgroundColor= "white";
-            _element.html("<b id="test">Hello, World!</b><a><u>Text</u></a>");
+            _element.html('<b id="test">Hello, World!</b><a><u>Text</u></a>');
         },
         trigger = function(el, etype){
             if (el.fireEvent) {
