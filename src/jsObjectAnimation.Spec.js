@@ -40,8 +40,8 @@ describe("when jsObjectAnimation is included", function() {
     });
 
     it("animate should end with endValue",function(){
-        var randomWidth = Math.random() * 200 + 100,
-            randomHeight = Math.random() * 200 + 100,
+        var randomWidth = 200,
+            randomHeight = 200,
             xpos = 200,
             ypos = 200;
         _element.animate({
@@ -62,8 +62,8 @@ describe("when jsObjectAnimation is included", function() {
     });
 
     it("animate pause and replay",function(){
-        var randomWidth = Math.random() * 200 + 100,
-            randomHeight = Math.random() * 200 + 100,
+        var randomWidth = 200,
+            randomHeight = 200,
             xpos = 200,
             ypos = 200;
         _element.animate({
@@ -89,8 +89,8 @@ describe("when jsObjectAnimation is included", function() {
     });
 
     it("animate callback should work",function(){
-        var randomWidth = Math.random() * 200 + 100,
-            randomHeight = Math.random() * 200 + 100;
+        var randomWidth = 200,
+            randomHeight = 200;
         _element.animate({
             ease: "linearTween",
             time: 100,
