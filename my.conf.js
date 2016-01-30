@@ -17,7 +17,8 @@ module.exports = function(config) {
     files: [
       "src/jsObjectAnimation.js",
       "src/jsobject.js",
-      "src/*.Spec.js"
+      "src/*.Spec.js",
+      "node_modules/jasmine-ajax/lib/mock-ajax.js"
     ],
 
 
@@ -37,7 +38,7 @@ module.exports = function(config) {
 
     preprocessors: {
       'src/jsObjectAnimation.js': ['coverage'],
-      'src/jsObject.js': ['coverage']
+      'src/jsobject.js': ['coverage']
     },
 
 

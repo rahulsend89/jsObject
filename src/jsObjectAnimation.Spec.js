@@ -1,4 +1,4 @@
-describe("when jsObject is included", function() {
+describe("when jsObjectAnimation is included", function() {
     var _element,
         resetElementPosition = function(){
             _element.el.style.top = "10px";
@@ -104,5 +104,26 @@ describe("when jsObject is included", function() {
         jasmine.clock().tick(1000);
         expect(parseFloat(_element.el.style.width)).toBeCloseTo(58);
         expect(parseFloat(_element.el.style.height)).toBeCloseTo(20);
+    });
+
+    it("animate callback with delay should work",function(){
+        var testCallBack = false,
+            myElement = document.getElementById("testID"),
+            obj = jsObject(myElement);
+        _element.animate({
+            ease: "linearTween",
+            delay: 500,
+            time: 100,
+            left: 100,
+        },function(){
+            testCallBack = true;
+        });
+        _element.pause();
+        expect(testCallBack).toBeFalsy();
+        _element.pause();
+        jasmine.clock().tick(1000);
+        expect(testCallBack).toBeTruthy()
+        expect(parseFloat(_element.el.style.left)).toBeCloseTo(100);
+        expect(obj).toEqual(_element)
     });
 });

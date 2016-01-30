@@ -158,6 +158,22 @@
     }
     return mainObj;
 })(jsObject).extend({
+    toCamelCase: function(str) {
+        return str.replace(/-([a-z])/ig, function( all, letter ) {
+            return letter.toUpperCase();
+        });
+    },
+    getStyle: (function() {
+    if (typeof getComputedStyle !== "undefined") {
+        return function(el, cssProp) {
+            return window.getComputedStyle(el, null).getPropertyValue(cssProp);
+        };
+    } else {
+        return function(el, cssProp) {
+            return el.currentStyle[this.toCamelCase(cssProp)];
+        };
+    }
+    }()),
     css: function(el, css, value) {
         var cssType = typeof css,
             valueType = typeof value,
@@ -168,7 +184,7 @@
                 // set style info
                 for (var prop in css) {
                     if (css.hasOwnProperty(prop)) {
-                        elStyle[toCamelCase(prop)] = css[prop];
+                        elStyle[this.toCamelCase(prop)] = css[prop];
                     }
                 }
             } else if (cssType === "string") {
@@ -181,7 +197,7 @@
             }
 
         } else if (cssType === "string" && valueType === "string") {
-            elStyle[toCamelCase(css)] = value;
+            elStyle[this.toCamelCase(css)] = value;
 
         } else {
             throw {
@@ -290,8 +306,8 @@
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         xmlhttp.onreadystatechange = function() {
-            if (xmlhttp.readyState == 4 /*&& xmlhttp.status == 200*/ ) {
-                Obj["success"](xmlhttp.response);
+            if (this.readyState == this.DONE /*&& xmlhttp.status == 200*/ ) {
+                Obj["success"](this.response);
             }
         }
         xmlhttp.open(postData, url, true);
