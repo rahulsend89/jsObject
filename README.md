@@ -2,6 +2,7 @@ JsObject
 ========
 
 [![Build Status](https://travis-ci.org/rahulsend89/jsObject.svg?branch=master)](https://travis-ci.org/rahulsend89/jsObject)
+[![Build status](https://ci.appveyor.com/api/projects/status/xlauhppk74yrd7o4?svg=true)](https://ci.appveyor.com/project/rahulsend89/jsobject)
 [![codecov.io](https://codecov.io/github/rahulsend89/jsObject/coverage.svg?branch=master)](https://codecov.io/github/rahulsend89/jsObject?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/95e0be54b477475c8369689e474618a7)](https://www.codacy.com/app/rahul-send89/jsObject)
 [![bitHound Overall Score](https://www.bithound.io/github/rahulsend89/jsObject/badges/score.svg)](https://www.bithound.io/github/rahulsend89/jsObject)
