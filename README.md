@@ -8,6 +8,7 @@ JsObject
 [![bitHound Overall Score](https://www.bithound.io/github/rahulsend89/jsObject/badges/score.svg)](https://www.bithound.io/github/rahulsend89/jsObject)
 [![bitHound Dependencies](https://www.bithound.io/github/rahulsend89/jsObject/badges/dependencies.svg)](https://www.bithound.io/github/rahulsend89/jsObject/master/dependencies/npm)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
+[![Sauce Test Status](https://saucelabs.com/browser-matrix/rahul_send89.svg)](https://saucelabs.com/u/rahul_send89)
 <!--[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)-->
 
 A powerful little Javascript object based library to handle simple as well as smooth animations. Linear animations, ease-in-out Cubic, ease-in-out Sine, ease-in-out-Quad, ease-in-out-Circle, ease-in-out-Elastic, ease-in-out-Bounce and lot more.  
