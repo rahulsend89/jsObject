@@ -169,7 +169,7 @@ module.exports = function(config) {
       enabled: false,
       usePhantomJS: true
     };
-    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'sl_chrome', 'sl_firefox', 'sl_ios_safari', 'sl_ie_11'];
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS'];
   }
   config.set(configuration);
 };
