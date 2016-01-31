@@ -2,9 +2,11 @@
 // Generated on Tue Jan 26 2016 18:34:32 GMT+0530 (IST)
 
 module.exports = function(config) {
-  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
-    console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.')
-    process.exit(1)
+  if(process.env.TRAVIS) {
+    if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+      console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.')
+      process.exit(1)
+    }
   }
   var configuration = {
 
