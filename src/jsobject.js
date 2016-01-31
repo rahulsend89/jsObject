@@ -1,3 +1,4 @@
+/*jslint node: true */
 (function(mainObj) {
     var arForFunClass = ["addClass", "removeClass", "toggleClass", "hasClass", "css", "click", "mouseover", "mouseout", "addEvent", "removeEvent"],
         readyList = [],
@@ -15,6 +16,36 @@
         readyStateChange = function() {
             if (document.readyState === "complete") {
                 ready();
+            }
+        },
+        protoFunc = function(arVar) {
+            if (arVar === "css") {
+                return function(css, value) {
+                    mainObj[arVar](this.el, css, value);
+                    return this;
+                };
+            } else if (arVar === "click" || arVar === "mouseover" || arVar === "mouseout") {
+                return function(fn) {
+                    var that = this;
+                    mainObj.addEvent(this.el, arVar, function(e) {
+                        fn.call(that, e);
+                    });
+                    return this;
+                };
+
+            } else if (arVar === "addEvent" || arVar === "removeEvent") {
+                return function(evt, fn) {
+                    var that = this;
+                    mainObj[arVar](this.el, evt, function(e) {
+                        fn.call(that, e);
+                    });
+                    return this;
+                };
+            } else {
+                return function(classVal) {
+                    mainObj[arVar](this.el, classVal);
+                    return this;
+                };
             }
         };
     mainObj.onReady = function(callback, context) {
@@ -41,39 +72,10 @@
             }
             readyEventHandlersInstalled = true;
         }
-    }
+    };
     for (var inc = 0, len = arForFunClass.length; inc < len; inc++) {
         var tempVal = arForFunClass[inc];
-        mainObj.prototype[tempVal] = (function(arVar) {
-            if (arVar == "css") {
-                return function(css, value) {
-                    mainObj[arVar](this.el, css, value);
-                    return this;
-                }
-            } else if (arVar == "click" || arVar == "mouseover" || arVar == "mouseout") {
-                return function(fn) {
-                    var that = this;
-                    mainObj.addEvent(this.el, arVar, function(e) {
-                        fn.call(that, e);
-                    });
-                    return this;
-                };
-
-            } else if (arVar == "addEvent" || arVar == "removeEvent") {
-                return function(evt, fn) {
-                    var that = this;
-                    mainObj[arVar](this.el, evt, function(e) {
-                        fn.call(that, e);
-                    });
-                    return this;
-                };
-            } else {
-                return function(classVal) {
-                    mainObj[arVar](this.el, classVal);
-                    return this;
-                }
-            }
-        })(tempVal);
+        mainObj.prototype[tempVal] = protoFunc(tempVal);
     }
     if (typeof addEventListener !== "undefined") {
         mainObj.addEvent = function(obj, evt, fn) {
@@ -189,7 +191,7 @@
                 }
             } else if (cssType === "string") {
                 // get style info for specified property
-                return getStyle(el, css);
+                return this.getStyle(el, css);
             } else {
                 throw {
                     message: "Invalid parameter passed to css()"
@@ -283,33 +285,35 @@
         }
         return el;
     },
-    ObjToParams: function(obj) {
+    objToParams: function(obj) {
         var str = "",
             key;
         for (key in obj) {
-            if (str != "") {
+            if (str !== "") {
                 str += "&";
             }
-            str += key + "=" + encodeURIComponent(obj[key]);
-        };
+            if (obj.hasOwnProperty(key)) {
+                str += key + "=" + encodeURIComponent(obj[key]);
+            }
+        }
         return str;
     },
     ajxCall: function(Obj) {
         var xmlhttp,
-            postData = Obj["data"] ? "POST" : "GET",
-            params = postData ? this.ObjToParams(Obj["data"]) : undefined,
-            mimetype = Obj["mimetype"] ? Obj["mimetype"] : "text/plain",
-            url = Obj["url"];
+            postData = Obj.data ? "POST" : "GET",
+            params = postData ? this.objToParams(Obj.data) : undefined,
+            mimetype = Obj.mimetype ? Obj.mimetype : "text/plain",
+            url = Obj.url;
         if (window.XMLHttpRequest) {
             xmlhttp = new XMLHttpRequest();
         } else {
             xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
         }
         xmlhttp.onreadystatechange = function() {
-            if (this.readyState == this.DONE /*&& xmlhttp.status == 200*/ ) {
-                Obj["success"](this.response);
+            if (this.readyState === 4 /*&& xmlhttp.status == 200*/ ) {
+                Obj.success(this.response);
             }
-        }
+        };
         xmlhttp.open(postData, url, true);
         xmlhttp.setRequestHeader("Content-type", mimetype);
         if (params) {
@@ -320,8 +324,8 @@
         }
     },
     parseNode: function(xmlNode, result) {
-        if (xmlNode.nodeName == "#text" && xmlNode.nodeValue.trim() == "") {
-            return;
+        if (xmlNode.nodeName === "#text" && xmlNode.nodeValue.trim() === "") {
+            //return;
         } else {
             var resuleNode = {};
             var existing = result[xmlNode.nodeName];
@@ -331,22 +335,22 @@
                 } else {
                     result[xmlNode.nodeName].push(resuleNode);
                 }
-            } else if (xmlNode.nodeName != "#text") {
+            } else if (xmlNode.nodeName !== "#text") {
                 result[xmlNode.nodeName] = resuleNode;
             }
             if (xmlNode.nodeValue !== null) {
-                result["value"] = xmlNode.nodeValue;
+                result.value = xmlNode.nodeValue;
             }
             if (xmlNode.attributes) {
-                var length = xmlNode.attributes.length;
-                for (var i = 0; i < length; i++) {
+                var xmlNodeLength = xmlNode.attributes.length;
+                for (var i = 0; i < xmlNodeLength; i++) {
                     var attribute = xmlNode.attributes[i];
                     resuleNode[attribute.nodeName] = attribute.nodeValue;
                 }
             }
             var length = xmlNode.childNodes.length;
-            for (var i = 0; i < length; i++) {
-                this.parseNode(xmlNode.childNodes[i], resuleNode);
+            for (var j = 0; j < length; j++) {
+                this.parseNode(xmlNode.childNodes[j], resuleNode);
             }
         }
     },
@@ -358,7 +362,7 @@
             dom = new ActiveXObject('Microsoft.XMLDOM');
             dom.async = false;
             if (!dom.loadXML(xml)) {
-                throw dom.parseError.reason + " " + dom.parseError.srcText;
+                throw dom.parseError.reason;
             }
         } else {
             throw "cannot parse xml string!";

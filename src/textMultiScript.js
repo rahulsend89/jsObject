@@ -23,7 +23,7 @@ jsObject.onReady(function() {
                     top: initX,
                     width: Math.random() * 10 + 5
                 });
-            };
+            }
         },
         moveLeft = function() {
             initX -= moveVal;
@@ -53,19 +53,19 @@ jsObject.onReady(function() {
                         delay: delay,
                         ease: "easeInBack",
                         "font-size": randomXpos,
-                        top: -20,
+                        top: -20
                     }).el["acb"] = function() {
                         jsObject(this).animate({
                             time: 60,
                             delay: 0,
                             top: 0,
                             ease: "easeOutBack",
-                            "font-size": 30,
+                            "font-size": 30
                         }, callBackFun).toggleClass("toggle").el["acb"] = function() {
                             jsObject.toggleClass(this, "toggle");
                         };
                     };
-                };
+                }
             }
         };
 
@@ -75,7 +75,7 @@ jsObject.onReady(function() {
             className: "box"            
         });
         jsObject("main").el.appendChild(mySpan);
-    };
+    }
 
     jsObject.addEvent(document, "keydown", callback);
     jsObject(f.moveRight).click(moveRight);

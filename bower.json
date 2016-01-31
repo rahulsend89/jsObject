@@ -1,0 +1,23 @@
+{
+  "name": "jsobject",
+  "description": "javascript lib",
+  "main": "src/jsObjectAnimation.js",
+  "authors": [
+    "Rahul Malik <rahul.send89@gmail.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "javascript",
+    "animation",
+    "lib"
+  ],
+  "homepage": "https://github.com/rahulsend89/jsObject",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "coverage",
+    "config.codekit"
+  ]
+}

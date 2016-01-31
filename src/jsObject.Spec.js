@@ -131,8 +131,8 @@ describe("when jsObject is included", function() {
         trigger(document,"keydown");
         expect(removeEventFn).toBeFalsy();
     });
-    it("ObjToParams should work", function () {
-        var  testParam = jsObject.ObjToParams({"def":"awesome","def2":"cool"});
+    it("objToParams should work", function () {
+        var  testParam = jsObject.objToParams({"def":"awesome","def2":"cool"});
         expect(testParam ).toEqual("def=awesome&def2=cool")
     });
     it("ajxCall should work", function () {

@@ -12,8 +12,8 @@ jsObject.extend({
             _char.innerHTML = startdiv + "" + _char.innerHTML.split("").join(enddiv + "" + startdiv) + "" + enddiv;
             for (var j = 0, _len = _char.children.length; j < _len; j++) {
                 all_char.push(_char.children[j]);
-            };
-        };
+            }
+        }
         return {
             allchar: all_char,
             words: words
@@ -31,7 +31,7 @@ jsObject.extend({
             rvalue: jsObject.expand(this.el),
             current: this
         };
-    }
+    };
     o.revert = function() {
         jsObject.revert(this.el);
         return this;
