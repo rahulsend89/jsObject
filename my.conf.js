@@ -2,6 +2,10 @@
 // Generated on Tue Jan 26 2016 18:34:32 GMT+0530 (IST)
 
 module.exports = function(config) {
+  if (!process.env.SAUCE_USERNAME || !process.env.SAUCE_ACCESS_KEY) {
+    console.log('Make sure the SAUCE_USERNAME and SAUCE_ACCESS_KEY environment variables are set.')
+    process.exit(1)
+  }
   var configuration = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
@@ -34,13 +38,12 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress','dots','coverage'],
+    reporters: ['progress', 'dots', 'coverage', 'saucelabs'],
 
     preprocessors: {
       'src/jsObjectAnimation.js': ['coverage'],
       'src/jsobject.js': ['coverage']
     },
-
 
     // web server port
     port: 9876,
@@ -52,8 +55,18 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_INFO,
+    logLevel: config.LOG_DEBUG,
 
+    sauceLabs: {
+      testName: 'Karma and Sauce',
+      recordScreenshots: false,
+      connectOptions: {
+        port: 5757,
+        logfile: 'sauce_connect.log'
+      },
+      public: 'public'
+    },
+    captureTimeout: 120000,
 
     // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
@@ -92,6 +105,29 @@ module.exports = function(config) {
       Chrome_travis_ci: {
         base: 'Chrome',
         flags: ['--no-sandbox']
+      },
+      sl_chrome: {
+        base: 'SauceLabs',
+        browserName: 'chrome',
+        platform: 'Windows 7',
+        version: '35'
+      },
+      sl_firefox: {
+        base: 'SauceLabs',
+        browserName: 'firefox',
+        version: '30'
+      },
+      sl_ios_safari: {
+        base: 'SauceLabs',
+        browserName: 'iphone',
+        platform: 'OS X 10.9',
+        version: '7.1'
+      },
+      sl_ie_11: {
+        base: 'SauceLabs',
+        browserName: 'internet explorer',
+        platform: 'Windows 8.1',
+        version: '11'
       }
     },
     // Concurrency level
@@ -104,16 +140,17 @@ module.exports = function(config) {
       'karma-phantomjs-launcher',
       'karma-firefox-launcher',
       'karma-ie-launcher',
+      'karma-sauce-launcher',
       'karma-safari-launcher',
       'karma-detect-browsers'
     ]
   };
-  if(process.env.TRAVIS){
+  if(process.env.TRAVIS) {
     configuration.detectBrowsers = {
-          enabled : false,
-          usePhantomJS: true
+      enabled: false,
+      usePhantomJS: true
     }
-    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS'];
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'sl_chrome', 'sl_firefox', 'sl_ios_safari', 'sl_ie_11'];
   }
   config.set(configuration);
 }
