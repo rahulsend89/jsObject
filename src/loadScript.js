@@ -1,6 +1,5 @@
-var loadScript = (function() {
-    var mainObj = {},
-        head = document.getElementsByTagName("head")[0],
+var require = (function(global) {
+    var head = document.getElementsByTagName("head")[0],
         testReg = /^(complete|loaded)$/,
         removeListener = function(node, func, name, ieName) {
             if (node.detachEvent) {
@@ -16,28 +15,43 @@ var loadScript = (function() {
                 node.addEventListener(name, func, false);
             }
         },
-        onScriptLoad = function(evt) {
-            if (evt.type === 'load' ||
-                (testReg.test((evt.currentTarget || evt.srcElement).readyState))) {
-                var node = evt.currentTarget || evt.srcElement;
-                removeListener(node, onScriptLoad, 'load', 'onreadystatechange');
-                mainObj.scriptCallback();
-            }
-        },
-        createScriptElement = function(url){
-            var node = document.createElement('script');
+        createScriptElement = function(url,moduleName,scriptLoadedCallBack){
+            var node = document.createElement('script'),
+                onScriptLoad = function(evt) {
+                    if (evt.type === 'load' ||
+                        (testReg.test((evt.currentTarget || evt.srcElement).readyState))) {
+                        var node = evt.currentTarget || evt.srcElement,
+                            moduleName = node.getAttribute('data-definedmodule');
+                        removeListener(node, onScriptLoad, 'load', 'onreadystatechange');
+                        (global[moduleName] !== undefined)? scriptLoadedCallBack(global[moduleName]) : scriptLoadedCallBack();
+                    }
+                };
             node.type = 'text/javascript';
             node.charset = 'utf-8';
             node.async = true;
             addListener(node, onScriptLoad, 'load', 'onreadystatechange');
             head.appendChild(node);
             node.src = url;
+            node.setAttribute('data-definedmodule', moduleName);
             return node;
-        };
-    mainObj.scriptCallback = function(){};
-    mainObj.require = function(srcPath,scriptCallback){
-        createScriptElement(srcPath);
-        this.scriptCallback = scriptCallback;
-    };
-    return mainObj;
-})();
+        },
+         requireMain = function(requiredObj,scriptCallback) {
+             var i = 0,
+                 modAr = [];
+             for (var key in requiredObj) {
+                 i++;
+                 var srcPath = requiredObj[key],
+                     moduleName = key;
+                 createScriptElement(srcPath, moduleName, function (modName) {
+                     modAr.push(modName);
+                     i--;
+                     if (i === 0) {
+                         if (scriptCallback !== undefined) {
+                             scriptCallback.apply(null, modAr);
+                         }
+                     }
+                 });
+             }
+         };
+    return requireMain;
+})(this);

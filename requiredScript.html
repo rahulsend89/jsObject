@@ -4,13 +4,53 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="src/loadScript.js"></script>
+    <style type="text/css">
+        .box {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            background-color: #c6c6c6;
+            position: relative;
+            border: 1px black solid;
+            margin: 1px;
+        }
+        input {
+            padding: 30px;
+            border: 1px black solid;
+            width: 200px;
+        }
+        #splitId {
+            font-size: 30px;
+        }
+        .toggle{
+            color: red;
+        }
+    </style>
 </head>
 <body>
 
 </body>
+<div id="main">
+</div>
+<br/>
+<form name="f">
+    <input type="button" name="moveRight" value="moveRight" />
+    <input type="button" name="moveLeft" value="moveLeft" />
+    <input type="button" name="pause" value="PauseAnimation" />
+    <input type="button" name="textAnimation" value="textAnimation" />
+</form>
+<div id="splitId">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
 <script>
-    loadScript.require("src/jsObjectAnimation.js",function(){
-        console.log(jsObject);
+    console.log("loading : jsObjectAnimation");
+    require({"jsObject":"https://rawgit.com/rahulsend89/jsObject/master/src/jsObjectAnimation.js"},function(){
+        console.log("loaded : jsObjectAnimation");
+        require({"jsObject":"https://rawgit.com/rahulsend89/jsObject/master/src/jsobject.js",
+            "ease":"https://rawgit.com/rahulsend89/jsObject/master/src/easeFunction.js",
+            "textSplit":"https://rawgit.com/rahulsend89/jsObject/master/src/textSplit.js",
+            "textMulti":"https://rawgit.com/rahulsend89/jsObject/master/src/textMultiScript.js"
+        },function(){
+            console.log("loaded : reset");
+        });
     });
 </script>
 </html>
