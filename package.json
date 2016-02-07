@@ -26,6 +26,8 @@
   "homepage": "https://github.com/rahulsend89/jsObject#readme",
   "devDependencies": {
     "codecov.io": "^0.1.6",
+    "commitizen": "2.5.0",
+    "cz-conventional-changelog": "1.1.5",
     "istanbul": "0.4.2",
     "jasmine": "2.4.1",
     "jasmine-ajax": "3.2.0",
