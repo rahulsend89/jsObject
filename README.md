@@ -23,7 +23,7 @@ A powerful little Javascript object based library to handle simple as well as sm
 To start using jsObjectAnimation-min, you will need only the following 2.139kb of minified file:
 * [jsObjectAnimation-min.js](https://github.com/rahulsend89/jsObject/blob/master/src/min/jsObjectAnimation-min.js)
 
-Using Browserstack API
+[Using Browserstack API](https://www.browserstack.com)
 
 ###License
 Releasing under the <b>MIT License</b>.
