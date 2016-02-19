@@ -1,6 +1,8 @@
 JsObject
 ========
 
+[![Join the chat at https://gitter.im/rahulsend89/jsObject](https://badges.gitter.im/rahulsend89/jsObject.svg)](https://gitter.im/rahulsend89/jsObject?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Build Status](https://travis-ci.org/rahulsend89/jsObject.svg?branch=master)](https://travis-ci.org/rahulsend89/jsObject)
 [![Build status](https://ci.appveyor.com/api/projects/status/xlauhppk74yrd7o4?svg=true)](https://ci.appveyor.com/project/rahulsend89/jsobject)
 [![codecov.io](https://codecov.io/github/rahulsend89/jsObject/coverage.svg?branch=master)](https://codecov.io/github/rahulsend89/jsObject?branch=master)
