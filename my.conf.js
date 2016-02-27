@@ -161,14 +161,12 @@ module.exports = function(config) {
       },
       'SL_Android_4': {
         base: "SauceLabs",
-        browserName: "Samsung Galaxy S4",
-        platform: "android",
+        browserName: "android",
         version: "4.4"
       },
       'SL_Android_5': {
         base: "SauceLabs",
-        browserName: "Samsung Galaxy S4",
-        platform: "android",
+        browserName: "android",
         version: "5.0"
       },
       'BS_Chrome': {
