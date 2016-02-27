@@ -230,7 +230,7 @@ module.exports = function(config) {
       enabled: false,
       usePhantomJS: true
     };
-    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS'];
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS',,'BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
   }
   config.set(configuration);
 };
