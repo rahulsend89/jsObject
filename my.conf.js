@@ -80,7 +80,7 @@ module.exports = function(config) {
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     detectBrowsers: {
       enabled: true,
-      usePhantomJS: true
+      usePhantomJS: false
     },
 
 
@@ -162,13 +162,13 @@ module.exports = function(config) {
       'SL_Android_4': {
         base: "SauceLabs",
         browserName: "Android Emulator",
-        platform: "Android",
+        platform: "android",
         version: "4.0"
       },
       'SL_Android_5': {
         base: "SauceLabs",
         browserName: "Android Emulator",
-        platform: "Android",
+        platform: "android",
         version: "5.0"
       },
       'BS_Chrome': {
@@ -248,7 +248,7 @@ module.exports = function(config) {
   if(process.env.TRAVIS) {
     configuration.detectBrowsers = {
       enabled: false,
-      usePhantomJS: true
+      usePhantomJS: false
     };
     configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS','SL_Android_5','SL_Android_4','BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
   }
