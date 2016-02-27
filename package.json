@@ -32,6 +32,7 @@
     "jasmine": "2.4.1",
     "jasmine-ajax": "3.2.0",
     "karma": "0.13.19",
+    "karma-browserstack-launcher": "^0.1.10",
     "karma-chrome-launcher": "0.2.2",
     "karma-coverage": "0.5.3",
     "karma-detect-browsers": "2.0.2",
@@ -44,8 +45,10 @@
     "phantomjs": "^2.1.2",
     "semantic-release": "^4.3.5"
   },
-  "czConfig": {
-    "path": "node_modules/cz-conventional-changelog"
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
   },
   "dependencies": {}
 }
