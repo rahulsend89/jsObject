@@ -161,13 +161,13 @@ module.exports = function(config) {
       },
       'SL_Android_4': {
         base: "SauceLabs",
-        browserName: "Android Emulator",
+        browserName: "Generic Phone",
         platform: "android",
-        version: "4.0"
+        version: "4.4"
       },
       'SL_Android_5': {
         base: "SauceLabs",
-        browserName: "Android Emulator",
+        browserName: "Generic Phone",
         platform: "android",
         version: "5.0"
       },
