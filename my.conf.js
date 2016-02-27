@@ -108,6 +108,8 @@ module.exports = function(config) {
     browserStack: {
       project: 'rahulsend89/jsObject',
       name: "jsObjectTest",
+      username: process.env.BROWSERSTACK_USERNAME,
+      accessKey: process.env.BROWSERSTACK_KEY,
       startTunnel: true,
       timeout: 600 // 10min
     },
@@ -157,22 +159,16 @@ module.exports = function(config) {
         platform: "OS X 10.10",
         version: "8.1"
       },
-      'SL_IE_6': {
-        base: "SauceLabs",
-        browserName: "internet explorer",
-        platform: "Windows XP",
-        version: "6.0"
-      },
       'SL_Android_4': {
         base: "SauceLabs",
         browserName: "Android Emulator",
-        platform: "Android 4.0",
+        platform: "Android",
         version: "4.0"
       },
       'SL_Android_5': {
         base: "SauceLabs",
         browserName: "Android Emulator",
-        platform: "Android 5.0",
+        platform: "Android",
         version: "5.0"
       },
       'BS_Chrome': {
@@ -254,7 +250,7 @@ module.exports = function(config) {
       enabled: false,
       usePhantomJS: true
     };
-    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS','SL_IE_6','SL_Android_5','SL_Android_4','BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS','SL_Android_5','SL_Android_4','BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
   }
   config.set(configuration);
 };
