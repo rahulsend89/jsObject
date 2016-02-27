@@ -17,7 +17,9 @@ module.exports = function(config) {
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['jasmine', 'detectBrowsers'],
-
+    browserDisconnectTimeout: 10000,
+    browserDisconnectTolerance: 2,
+    browserNoActivityTimeout: 30000,
 
     // list of files / patterns to load in the browser
     files: [
@@ -104,7 +106,10 @@ module.exports = function(config) {
     },
 
     browserStack: {
-      project: 'rahulsend89/jsObject'
+      project: 'rahulsend89/jsObject',
+      name: "jsObjectTest",
+      startTunnel: true,
+      timeout: 600 // 10min
     },
 
     customLaunchers: {
@@ -151,6 +156,24 @@ module.exports = function(config) {
         browserName: "iphone",
         platform: "OS X 10.10",
         version: "8.1"
+      },
+      'SL_IE_6': {
+        base: "SauceLabs",
+        browserName: "internet explorer",
+        platform: "Windows XP",
+        version: "6.0"
+      },
+      'SL_Android_4': {
+        base: "SauceLabs",
+        browserName: "Android Emulator",
+        platform: "Android 4.0",
+        version: "4.0"
+      },
+      'SL_Android_5': {
+        base: "SauceLabs",
+        browserName: "Android Emulator",
+        platform: "Android 5.0",
+        version: "5.0"
       },
       'BS_Chrome': {
         base: 'BrowserStack',
@@ -222,7 +245,8 @@ module.exports = function(config) {
       'karma-ie-launcher',
       'karma-sauce-launcher',
       'karma-safari-launcher',
-      'karma-detect-browsers'
+      'karma-detect-browsers',
+      'karma-browserstack-launcher'
     ]
   };
   if(process.env.TRAVIS) {
@@ -230,7 +254,7 @@ module.exports = function(config) {
       enabled: false,
       usePhantomJS: true
     };
-    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS',,'BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
+    configuration.browsers = ['Chrome_travis_ci', 'Firefox', 'FirefoxAurora', 'FirefoxNightly', 'PhantomJS', 'SL_Chrome','SL_Firefox','SL_Safari','SL_IE_9','SL_IE_10','SL_IE_11','SL_iOS','SL_IE_6','SL_Android_5','SL_Android_4','BS_Chrome','BS_Firefox','BS_Opera','BS_IE_11','BS_IE_10','BS_IE_9','BS_Safari','BS_iOS','BS_Android'];
   }
   config.set(configuration);
 };
