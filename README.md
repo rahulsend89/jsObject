@@ -50,6 +50,12 @@ With [npm](https://www.npmjs.com/) do:
 npm install -D jsobject
 ```
 
+With [bower](bower) do:
+
+```
+bower install jsObject --save
+```
+
 [Using Browserstack API](https://www.browserstack.com)
 
 ###License
