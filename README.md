@@ -50,7 +50,7 @@ With [npm](https://www.npmjs.com/) do:
 npm install -D jsobject
 ```
 
-With [bower](bower) do:
+With [bower](http://bower.io/) do:
 
 ```
 bower install jsObject --save
