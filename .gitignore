@@ -5,6 +5,7 @@ config.codekit
 # Other source repository archive directories (protects when importing)
 .idea/
 .codekit-cache/
+build
 node_modules/
 coverage/
 CVS
