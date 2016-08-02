@@ -56,7 +56,9 @@ With [bower](http://bower.io/) do:
 bower install jsObject --save
 ```
 
-[Using Browserstack API](https://www.browserstack.com)
+Thanks [Browserstack](https://www.browserstack.com) for kindly supporting this open source project by providing [Automate Basic](https://www.browserstack.com/automate)
+
+Thanks [JetBrains](http://www.jetbrains.com/) for kindly supporting this open source project by providing [WebStorm](https://www.jetbrains.com/webstorm/) IDE.
 
 ###License
 Releasing under the <b>MIT License</b>.
