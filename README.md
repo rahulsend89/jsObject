@@ -61,4 +61,5 @@ Thanks [Browserstack](https://www.browserstack.com) for kindly supporting this o
 Thanks [JetBrains](http://www.jetbrains.com/) for kindly supporting this open source project by providing [WebStorm](https://www.jetbrains.com/webstorm/) IDE.
 
 ###License
+
 Releasing under the <b>MIT License</b>.
