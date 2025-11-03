@@ -6,6 +6,7 @@
   "scripts": {
     "commit": "git-cz",
     "test": "karma start my.conf.js",
+    "serve": "browser-sync start --server src --files \"src/**/*.{html,js,css}\" --startPath examples/index.html",
     "report-coverage": "cat ./coverage/lcov/lcov.info | codecov",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -45,6 +46,7 @@
     "karma-firefox-launcher": "0.1.7",
     "karma-ie-launcher": "0.2.0",
     "karma-jasmine": "^0.3.7",
+    "karma-phantomjs-launcher": "^1.0.4",
     "karma-safari-launcher": "0.1.1",
     "karma-sauce-launcher": "0.3.0",
     "semantic-release": "^4.3.5"
@@ -53,6 +55,5 @@
     "commitizen": {
       "path": "node_modules/cz-conventional-changelog"
     }
-  },
-  "dependencies": {}
+  }
 }
