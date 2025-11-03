@@ -1,18 +1,23 @@
 version: "{build}"
 
+image: Visual Studio 2022
+
 environment:
-  nodejs_version: "4.2.6"
+  nodejs_version: "18"
 
 matrix:
   fast_finish: true
 
+cache:
+  - '%APPDATA%\\npm-cache'
+
 install:
-  - choco install firefox
-  - choco install googlechrome
-  - ps: Install-Product node
+  - ps: Install-Product node $env:nodejs_version x64
+  - choco install googlechrome --no-progress --yes
+  - choco install firefox --no-progress --yes
   - node --version
   - npm --version
-  - npm install
+  - npm ci
 
 test_script:
   - npm test
