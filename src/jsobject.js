@@ -299,11 +299,21 @@
         return str;
     },
     ajxCall: function(Obj) {
-        var xmlhttp,
-            postData = Obj.data ? "POST" : "GET",
-            params = postData ? this.objToParams(Obj.data) : undefined,
-            mimetype = Obj.mimetype ? Obj.mimetype : "text/plain",
+        if (!Obj || !Obj.url) {
+            throw {
+                message: "Invalid argument"
+            };
+        }
+        var dataType = typeof Obj.data,
+            xmlhttp,
+            method = (Obj.method || (Obj.data ? "POST" : "GET")).toUpperCase(),
+            params = dataType === "string" ? Obj.data : (dataType === "object" && Obj.data ? this.objToParams(Obj.data) : undefined),
+            mimetype = Obj.mimetype ? Obj.mimetype : "application/x-www-form-urlencoded; charset=UTF-8",
             url = Obj.url;
+        if (params && method === "GET") {
+            url += (url.indexOf("?") === -1 ? "?" : "&") + params;
+            params = undefined;
+        }
         if (window.XMLHttpRequest) {
             xmlhttp = new XMLHttpRequest();
         } else {
@@ -311,13 +321,17 @@
         }
         xmlhttp.onreadystatechange = function() {
             if (this.readyState === 4 /*&& xmlhttp.status == 200*/ ) {
-                Obj.success(this.response);
+                if (typeof Obj.success === "function") {
+                    var response = ("response" in this && this.response !== undefined) ? this.response : this.responseText;
+                    Obj.success(response);
+                }
             }
         };
-        xmlhttp.open(postData, url, true);
-        xmlhttp.setRequestHeader("Content-type", mimetype);
+        xmlhttp.open(method, url, true);
+        if (method !== "GET") {
+            xmlhttp.setRequestHeader("Content-type", mimetype);
+        }
         if (params) {
-            xmlhttp.setRequestHeader("Content-length", params.length);
             xmlhttp.send(params);
         } else {
             xmlhttp.send();
